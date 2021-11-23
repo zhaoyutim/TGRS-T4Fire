@@ -3,6 +3,7 @@ import warnings
 import tensorflow as tf
 import typing_extensions as tx
 
+from vit_keras.patch_encoder import PatchEncoder
 from . import layers, utils
 
 ConfigDict = tx.TypedDict(
@@ -29,7 +30,7 @@ CONFIG_L: ConfigDict = {
     "mlp_dim": 4096,
     "num_heads": 16,
     "num_layers": 24,
-    "hidden_size": 1024,
+    "hidden_size": 768,
 }
 
 BASE_URL = "https://github.com/faustomorales/vit-keras/releases/download/dl"
@@ -62,7 +63,7 @@ def interpret_image_size(image_size_arg: ImageSizeArg) -> typing.Tuple[int, int]
 
 
 def build_model(
-    image_size: ImageSizeArg,
+    input_shape: tuple,
     patch_size: int,
     num_layers: int,
     hidden_size: int,
@@ -94,21 +95,8 @@ def build_model(
         representation_size: The size of the representation prior to the
             classification layer. If None, no Dense layer is inserted.
     """
-    image_size_tuple = interpret_image_size(image_size)
-    assert (image_size_tuple[0] % patch_size == 0) and (
-        image_size_tuple[1] % patch_size == 0
-    ), "image_size must be a multiple of patch_size"
-    x = tf.keras.layers.Input(shape=(image_size_tuple[0], image_size_tuple[1], 3))
-    y = tf.keras.layers.Conv2D(
-        filters=hidden_size,
-        kernel_size=patch_size,
-        strides=patch_size,
-        padding="valid",
-        name="embedding",
-    )(x)
-    y = tf.keras.layers.Reshape((y.shape[1] * y.shape[2], hidden_size))(y)
-    y = layers.ClassToken(name="class_token")(y)
-    y = layers.AddPositionEmbs(name="Transformer/posembed_input")(y)
+    x = tf.keras.layers.Input(shape=input_shape)
+    y = PatchEncoder(input_shape[0], hidden_size)(x)
     for n in range(num_layers):
         y, _ = layers.TransformerBlock(
             num_heads=num_heads,
@@ -119,7 +107,6 @@ def build_model(
     y = tf.keras.layers.LayerNormalization(
         epsilon=1e-6, name="Transformer/encoder_norm"
     )(y)
-    y = tf.keras.layers.Lambda(lambda v: v[:, 0], name="ExtractToken")(y)
     if representation_size is not None:
         y = tf.keras.layers.Dense(
             representation_size, name="pre_logits", activation="tanh"
@@ -160,35 +147,24 @@ def load_pretrained(
     local_filepath = tf.keras.utils.get_file(fname, origin, cache_subdir="weights")
     utils.load_weights_numpy(
         model=model,
-        params_path=local_filepath,
-        pretrained_top=pretrained_top,
-        num_x_patches=image_size_tuple[1] // patch_size,
-        num_y_patches=image_size_tuple[0] // patch_size,
+        params_path=local_filepath
     )
 
 
 def vit_b16(
-    image_size: ImageSizeArg = (224, 224),
-    classes=1000,
+    input_shape = (10,45),
+    classes=3,
     activation="linear",
     include_top=True,
     pretrained=True,
     pretrained_top=True,
     weights="imagenet21k+imagenet2012",
 ):
-    """Build ViT-B16. All arguments passed to build_model."""
-    if pretrained_top:
-        classes = validate_pretrained_top(
-            include_top=include_top,
-            pretrained=pretrained,
-            classes=classes,
-            weights=weights,
-        )
     model = build_model(
         **CONFIG_B,
         name="vit-b16",
         patch_size=16,
-        image_size=image_size,
+        input_shape=input_shape,
         classes=classes,
         activation=activation,
         include_top=include_top,
@@ -201,7 +177,7 @@ def vit_b16(
             weights=weights,
             model=model,
             pretrained_top=pretrained_top,
-            image_size=image_size,
+            image_size=input_shape,
             patch_size=16,
         )
     return model
@@ -209,7 +185,7 @@ def vit_b16(
 
 def vit_b32(
     image_size: ImageSizeArg = (224, 224),
-    classes=1000,
+    classes=3,
     activation="linear",
     include_top=True,
     pretrained=True,
@@ -248,7 +224,7 @@ def vit_b32(
 
 def vit_l16(
     image_size: ImageSizeArg = (384, 384),
-    classes=1000,
+    classes=3,
     activation="linear",
     include_top=True,
     pretrained=True,
@@ -267,7 +243,7 @@ def vit_l16(
         **CONFIG_L,
         patch_size=16,
         name="vit-l16",
-        image_size=image_size,
+        input_shape=image_size,
         classes=classes,
         activation=activation,
         include_top=include_top,
@@ -287,7 +263,7 @@ def vit_l16(
 
 def vit_l32(
     image_size: ImageSizeArg = (384, 384),
-    classes=1000,
+    classes=3,
     activation="linear",
     include_top=True,
     pretrained=True,

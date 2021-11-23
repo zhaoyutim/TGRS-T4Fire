@@ -91,7 +91,7 @@ def apply_embedding_weights(target_layer, source_weights, num_x_patches, num_y_p
 
 
 def load_weights_numpy(
-    model, params_path, pretrained_top, num_x_patches, num_y_patches
+    model, params_path
 ):
     """Load weights saved using Flax as a numpy array.
 
@@ -117,10 +117,6 @@ def load_weights_numpy(
     )
     n_transformers_out = sum(
         l.name.startswith("Transformer/encoderblock_") for l in model.layers
-    )
-    assert n_transformers == n_transformers_out, (
-        f"Wrong number of transformers ("
-        f"{n_transformers_out} in model vs. {n_transformers} in weights)."
     )
 
     matches = []
@@ -169,32 +165,32 @@ def load_weights_numpy(
                 ]
             ]
         )
-    for layer_name in ["embedding", "head", "pre_logits"]:
-        if layer_name == "head" and not pretrained_top:
-            source_keys_used.extend(["head/kernel", "head/bias"])
-            continue
-        if layer_name == "pre_logits" and not pre_logits:
-            continue
-        matches.append(
-            {
-                "layer": model.get_layer(layer_name),
-                "keys": [f"{layer_name}/{name}" for name in ["kernel", "bias"]],
-            }
-        )
-    matches.append({"layer": model.get_layer("class_token"), "keys": ["cls"]})
+    # for layer_name in ["embedding", "head", "pre_logits"]:
+    #     if layer_name == "head" and not pretrained_top:
+    #         source_keys_used.extend(["head/kernel", "head/bias"])
+    #         continue
+    #     if layer_name == "pre_logits" and not pre_logits:
+    #         continue
+    #     matches.append(
+    #         {
+    #             "layer": model.get_layer(layer_name),
+    #             "keys": [f"{layer_name}/{name}" for name in ["kernel", "bias"]],
+    #         }
+    #     )
+    # matches.append({"layer": model.get_layer("class_token"), "keys": ["cls"]})
     matches.append(
         {
             "layer": model.get_layer("Transformer/encoder_norm"),
             "keys": [f"Transformer/encoder_norm/{name}" for name in ["scale", "bias"]],
         }
     )
-    apply_embedding_weights(
-        target_layer=model.get_layer("Transformer/posembed_input"),
-        source_weights=params_dict["Transformer/posembed_input/pos_embedding"],
-        num_x_patches=num_x_patches,
-        num_y_patches=num_y_patches,
-    )
-    source_keys_used.append("Transformer/posembed_input/pos_embedding")
+    # apply_embedding_weights(
+    #     target_layer=model.get_layer("Transformer/posembed_input"),
+    #     source_weights=params_dict["Transformer/posembed_input/pos_embedding"],
+    #     num_x_patches=num_x_patches,
+    #     num_y_patches=num_y_patches,
+    # )
+    # source_keys_used.append("Transformer/posembed_input/pos_embedding")
     for match in matches:
         source_keys_used.extend(match["keys"])
         source_weights = [params_dict[k] for k in match["keys"]]
