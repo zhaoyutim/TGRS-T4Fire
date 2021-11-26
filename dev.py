@@ -9,10 +9,15 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from vit_keras import vit, utils
 
-train_dataset = np.load('/NOBACKUP/zhao2/proj3_train_v1.npy')
-label_dataset = np.load('/NOBACKUP/zhao2/proj3_label_v1.npy')
-print(train_dataset.shape)
-print(label_dataset.shape)
+x_dataset = np.load('/NOBACKUP/zhao2/proj3_train_5_channel.npy').transpose((1,0,2))
+y_dataset = np.zeros((x_dataset.shape[0],x_dataset.shape[1],2))
+y_dataset[: ,:, 0] = x_dataset[:, :, 45] == 0
+y_dataset[:, :, 1] = x_dataset[:, :, 45] > 0
+
+x_train, x_test, y_train, y_test = train_test_split(x_dataset[:,:,:45], y_dataset, test_size=0.2)
+
+print(x_train.shape)
+print(y_train.shape)
 batch_size=512
 MAX_EPOCHS = 20
 learning_rate = 0.001
@@ -57,8 +62,8 @@ def f1_m(y_true, y_pred):
 
 model = vit.vit_b16(
     input_shape=input_shape,
-    classes=3,
-    activation='linear',
+    classes=2,
+    activation='sigmoid',
     pretrained=True,
     include_top=True,
     pretrained_top=True
@@ -70,15 +75,14 @@ optimizer = tfa.optimizers.AdamW(
 
 model.compile(
     optimizer=optimizer,
-    loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
+    loss=tfa.losses.SigmoidFocalCrossEntropy(from_logits=False, gamma=0.01),
     metrics=[
-        tf.keras.metrics.CategoricalAccuracy(name="accuracy"),
-        f1_m
+        tf.keras.metrics.CategoricalAccuracy(name="accuracy")
     ],
 )
 history = model.fit(
-    x=train_dataset,
-    y=label_dataset,
+    x=x_train,
+    y=y_train,
     batch_size=batch_size,
     epochs=MAX_EPOCHS,
     validation_split=0.1,
