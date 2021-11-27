@@ -9,11 +9,16 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from vit_keras import vit, utils
 
-train_dataset = np.load('/content/drive/MyDrive/train/proj3_train_v1.npy')
-label_dataset = np.load('/content/drive/MyDrive/train/proj3_label_v1.npy')
-print(train_dataset.shape)
-print(label_dataset.shape)
-batch_size=512
+x_dataset = np.load('/NOBACKUP/zhao2/proj3_train_5_channel.npy').transpose((1,0,2))
+y_dataset = np.zeros((x_dataset.shape[0],x_dataset.shape[1],2))
+y_dataset[: ,:, 0] = x_dataset[:, :, 45] == 0
+y_dataset[:, :, 1] = x_dataset[:, :, 45] > 0
+
+x_train, x_test, y_train, y_test = train_test_split(x_dataset[:,:,:45], y_dataset, test_size=0.2)
+
+print(x_train.shape)
+print(y_train.shape)
+batch_size=256
 MAX_EPOCHS = 20
 learning_rate = 0.001
 weight_decay = 0.0001
@@ -76,8 +81,8 @@ model.compile(
     ],
 )
 history = model.fit(
-    x=train_dataset,
-    y=label_dataset,
+    x=x_train,
+    y=y_train,
     batch_size=batch_size,
     epochs=MAX_EPOCHS,
     validation_split=0.1,
