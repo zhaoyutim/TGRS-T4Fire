@@ -14,3 +14,4 @@ poetry.lock
 *.h5
 weights/
 venv
+data
