@@ -29,22 +29,22 @@ class TokenizeProcessor:
 
 if __name__=='__main__':
     window_size = 5
-    tokenize_processor = TokenizeProcessor('../data/proj3_train_img.npy')
+    tokenize_processor = TokenizeProcessor('../data/proj3_test_img_10fires.npy')
     tokenized_array = tokenize_processor.tokenizing(window_size)
     np.nan_to_num(tokenized_array)
-    np.save('../data/proj3_train_w'+str(window_size)+'.npy', tokenized_array.reshape(-1,10,pow(window_size,2)*5+1))
-    for i in range(tokenized_array.shape[0]):
-        for j in range(tokenized_array.shape[3]):
-            plt.subplot(211)
-            ch_label = pow(window_size,2)*5
-            ch_i4 = pow(window_size,2)*3+pow(window_size,2)//2
-            plt.imshow(
-                (tokenized_array[i, :, :, j, ch_label] - tokenized_array[i, :, :, j, ch_label].min()) - (
-                            tokenized_array[i, :, :, j, ch_label].max() - tokenized_array[i, :, :, j, ch_label].min()))
-            plt.subplot(212)
-            plt.imshow(
-                (tokenized_array[i, :, :, j, ch_i4] - tokenized_array[i, :, :, j, ch_i4].min()) - (
-                            tokenized_array[i, :, :, j, ch_i4].max() - tokenized_array[i, :, :, j, ch_i4].min()))
-            plt.savefig('../plt/' + str(i) + str(j) + '.png')
-            plt.show()
+    np.save('../data/proj3_test_w'+str(window_size)+'.npy', tokenized_array.reshape(-1,10,pow(window_size,2)*5+1))
+    # for i in range(tokenized_array.shape[0]):
+    #     for j in range(tokenized_array.shape[3]):
+    #         plt.subplot(211)
+    #         ch_label = pow(window_size,2)*5
+    #         ch_i4 = pow(window_size,2)*3+pow(window_size,2)//2
+    #         plt.imshow(
+    #             (tokenized_array[i, :, :, j, ch_label] - tokenized_array[i, :, :, j, ch_label].min()) - (
+    #                         tokenized_array[i, :, :, j, ch_label].max() - tokenized_array[i, :, :, j, ch_label].min()))
+    #         plt.subplot(212)
+    #         plt.imshow(
+    #             (tokenized_array[i, :, :, j, ch_i4] - tokenized_array[i, :, :, j, ch_i4].min()) - (
+    #                         tokenized_array[i, :, :, j, ch_i4].max() - tokenized_array[i, :, :, j, ch_i4].min()))
+    #         plt.savefig('../plt/' + str(i) + str(j) + '.png')
+    #         plt.show()
 

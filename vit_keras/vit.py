@@ -110,7 +110,9 @@ def build_model(
             classification layer. If None, no Dense layer is inserted.
     """
     x = tf.keras.layers.Input(shape=input_shape)
+    proj = tf.keras.layers.Dense(units=hidden_size)(x)
     y = PatchEncoder(input_shape[0], hidden_size)(x)
+    y = y + proj
     for n in range(num_layers):
         y, _ = layers.TransformerBlock(
             num_heads=num_heads,

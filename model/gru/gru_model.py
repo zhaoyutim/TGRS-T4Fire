@@ -6,12 +6,12 @@ from sklearn.model_selection import train_test_split
 import tensorflow as tf
 import keras.backend as K
 class GRUModel:
-    def __init__(self, input_shape, num_classes, gru_layers, projection_dims):
+    def __init__(self, input_shape, num_classes, gru_layers, projection_dims, activation):
         self.input_shape = input_shape
         self.gru_layers=gru_layers
         self.num_classes = num_classes
         self.projection_dims=projection_dims
-        self.model = self.get_model()
+        self.model = self.get_model(activation)
         self.model_10_layers = self.get_model_10_layers(input_shape, num_classes)
 
     def recall_m(self, y_true, y_pred):
@@ -39,12 +39,12 @@ class GRUModel:
         SS_tot = K.sum(K.square(y_true - K.mean(y_true)))
         return (1 - SS_res / (SS_tot + K.epsilon()))
 
-    def get_model(self):
+    def get_model(self, activation):
         input = tf.keras.layers.Input(shape=self.input_shape)
         x = tf.keras.layers.GRU(self.projection_dims, dropout=0.2, return_sequences=True)(input)
         for _ in range(self.gru_layers-1):
             x = tf.keras.layers.GRU(self.projection_dims, dropout=0.2, return_sequences=True)(x)
-        output = tf.keras.layers.Dense(self.num_classes, activation='sigmoid')(x)
+        output = tf.keras.layers.Dense(self.num_classes, activation=activation)(x)
         gru_model = tf.keras.Model(inputs=input, outputs=output)
         return gru_model
 
@@ -63,25 +63,3 @@ class GRUModel:
             tf.keras.layers.Dense(num_class, activation='sigmoid')
         ])
         return gru_model
-
-    def compile_and_fit(self, model, x_train, y_train, batch_size, ephoches, patience=2):
-        logdir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-        tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir)
-        early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss',
-                                                          patience=patience,
-                                                          mode='min')
-        checkpoint_filepath = "/tmp/checkpoint_gru"
-        checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
-            checkpoint_filepath,
-            monitor="val_accuracy",
-            save_best_only=True,
-            save_weights_only=True,
-        )
-
-        model.compile(loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),
-                      optimizer=tf.optimizers.Adam(1e-3),
-                      metrics=[tf.keras.losses.BinaryCrossentropy(from_logits=False), self.f1_m])
-
-        history = model.fit(x_train, y_train, batch_size = batch_size, epochs=ephoches,
-                            validation_split=0.1, callbacks=[checkpoint_callback])
-        return history
