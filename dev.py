@@ -56,7 +56,7 @@ if __name__=='__main__':
     load_pretrained = args.p
     window_size = args.w
 
-    x_dataset = np.load('/NOBACKUP/zhao2/proj3_train_w'+str(window_size)+'.npy').transpose((1,0,2))
+    x_dataset = np.load('/NOBACKUP/zhao2/proj3_train_w'+str(window_size)+'.npy')
     y_dataset = np.zeros((x_dataset.shape[0],x_dataset.shape[1],2))
     y_dataset[: ,:, 0] = x_dataset[:, :, 45] == 0
     y_dataset[:, :, 1] = x_dataset[:, :, 45] > 0
