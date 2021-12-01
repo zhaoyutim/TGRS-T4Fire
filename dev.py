@@ -52,7 +52,7 @@ if __name__=='__main__':
     parser.add_argument('-p', type=bool, help='Window size')
 
     args = parser.parse_args()
-    model = args.m
+    model_name = args.m
     load_pretrained = args.p
     window_size = args.w
 
@@ -76,7 +76,7 @@ if __name__=='__main__':
     input_shape=(10,45)
 
     wandb.login()
-    wandb.init(project="tokenized_window_size"+ str(window_size) +str(model), entity="zhaoyutim")
+    wandb.init(project="tokenized_window_size"+ str(window_size) +str(model_name), entity="zhaoyutim")
     # wandb.config = {
     #   "learning_rate": learning_rate,
     #   "weight_decay": weight_decay,
@@ -85,7 +85,7 @@ if __name__=='__main__':
     #   "num_heads":num_heads,
     #   "transformer_layers": transformer_layers
     # }
-    if model == 'vit_small':
+    if model_name == 'vit_small':
         model = vit.vit_small(
             input_shape=input_shape,
             classes=num_classes,
@@ -94,7 +94,7 @@ if __name__=='__main__':
             include_top=True,
             pretrained_top=True
         )
-    elif model=='vit_tiny':
+    elif model_name=='vit_tiny':
         model = vit.vit_small(
             input_shape=input_shape,
             classes=num_classes,
@@ -103,10 +103,10 @@ if __name__=='__main__':
             include_top=True,
             pretrained_top=True
         )
-    elif model == 'gru20':
+    elif model_name == 'gru20':
         gru = GRUModel(input_shape, num_classes, 20, 256, 'sigmoid')
         model = gru.model
-    elif model=='vit_base':
+    elif model_name=='vit_base':
         model = vit.vit_base(
             input_shape=input_shape,
             classes=num_classes,
@@ -141,6 +141,6 @@ if __name__=='__main__':
             validation_split=0.1,
             callbacks=[WandbCallback()],
         )
-        model.save('/NOBACKUP/zhao2/proj3_'+model+'w' + str(window_size) + '_nopretrained')
+        model.save('/NOBACKUP/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained')
     else:
-        model.load_weights('/NOBACKUP/zhao2/proj3_'+model+'w' + str(window_size) + '_nopretrained')
+        model.load_weights('/NOBACKUP/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained')
