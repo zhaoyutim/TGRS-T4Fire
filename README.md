@@ -15,7 +15,7 @@ from vit_keras import vit, utils
 
 image_size = 384
 classes = utils.get_imagenet_classes()
-model = vit.vit_b16(
+model = vit.vit_base(
     image_size=image_size,
     activation='sigmoid',
     pretrained=True,
@@ -55,7 +55,7 @@ from vit_keras import vit, utils, visualize
 # Load a model
 image_size = 384
 classes = utils.get_imagenet_classes()
-model = vit.vit_b16(
+model = vit.vit_base(
     image_size=image_size,
     activation='sigmoid',
     pretrained=True,

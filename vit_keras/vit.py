@@ -16,6 +16,21 @@ ConfigDict = tx.TypedDict(
         "hidden_size": int,
     },
 )
+CONFIG_Ti: ConfigDict = {
+    "dropout": 0.1,
+    "mlp_dim": 768,
+    "num_heads": 3,
+    "num_layers": 12,
+    "hidden_size": 192,
+}
+
+CONFIG_S: ConfigDict = {
+    "dropout": 0.1,
+    "mlp_dim": 1664,
+    "num_heads": 6,
+    "num_layers": 12,
+    "hidden_size": 384,
+}
 
 CONFIG_B: ConfigDict = {
     "dropout": 0.1,
@@ -64,7 +79,6 @@ def interpret_image_size(image_size_arg: ImageSizeArg) -> typing.Tuple[int, int]
 
 def build_model(
     input_shape: tuple,
-    patch_size: int,
     num_layers: int,
     hidden_size: int,
     num_heads: int,
@@ -151,9 +165,9 @@ def load_pretrained(
     )
 
 
-def vit_b16(
+def vit_base(
     input_shape = (10,45),
-    classes=3,
+    classes=2,
     activation="linear",
     include_top=True,
     pretrained=True,
@@ -163,7 +177,6 @@ def vit_b16(
     model = build_model(
         **CONFIG_B,
         name="vit-b16",
-        patch_size=16,
         input_shape=input_shape,
         classes=classes,
         activation=activation,
@@ -182,119 +195,62 @@ def vit_b16(
         )
     return model
 
-
-def vit_b32(
-    image_size: ImageSizeArg = (224, 224),
-    classes=3,
+def vit_tiny(
+    input_shape = (10,45),
+    classes=2,
     activation="linear",
     include_top=True,
     pretrained=True,
     pretrained_top=True,
     weights="imagenet21k+imagenet2012",
 ):
-    """Build ViT-B32. All arguments passed to build_model."""
-    if pretrained_top:
-        classes = validate_pretrained_top(
-            include_top=include_top,
-            pretrained=pretrained,
-            classes=classes,
-            weights=weights,
-        )
     model = build_model(
-        **CONFIG_B,
-        name="vit-b32",
-        patch_size=32,
-        image_size=image_size,
+        **CONFIG_Ti,
+        name="vit-ti",
+        input_shape=input_shape,
         classes=classes,
         activation=activation,
         include_top=include_top,
         representation_size=768 if weights == "imagenet21k" else None,
     )
-    if pretrained:
-        load_pretrained(
-            size="B_32",
-            weights=weights,
-            model=model,
-            pretrained_top=pretrained_top,
-            patch_size=32,
-            image_size=image_size,
-        )
+
+    # if pretrained:
+    #     load_pretrained(
+    #         size="B_16",
+    #         weights=weights,
+    #         model=model,
+    #         pretrained_top=pretrained_top,
+    #         image_size=input_shape,
+    #         patch_size=16,
+    #     )
     return model
 
-
-def vit_l16(
-    image_size: ImageSizeArg = (384, 384),
-    classes=3,
+def vit_small(
+    input_shape = (10,45),
+    classes=2,
     activation="linear",
     include_top=True,
     pretrained=True,
     pretrained_top=True,
     weights="imagenet21k+imagenet2012",
 ):
-    """Build ViT-L16. All arguments passed to build_model."""
-    if pretrained_top:
-        classes = validate_pretrained_top(
-            include_top=include_top,
-            pretrained=pretrained,
-            classes=classes,
-            weights=weights,
-        )
     model = build_model(
-        **CONFIG_L,
-        patch_size=16,
-        name="vit-l16",
-        input_shape=image_size,
+        **CONFIG_S,
+        name="vit-small",
+        input_shape=input_shape,
         classes=classes,
         activation=activation,
         include_top=include_top,
-        representation_size=1024 if weights == "imagenet21k" else None,
+        representation_size=768 if weights == "imagenet21k" else None,
     )
-    if pretrained:
-        load_pretrained(
-            size="L_16",
-            weights=weights,
-            model=model,
-            pretrained_top=pretrained_top,
-            patch_size=16,
-            image_size=image_size,
-        )
-    return model
 
-
-def vit_l32(
-    image_size: ImageSizeArg = (384, 384),
-    classes=3,
-    activation="linear",
-    include_top=True,
-    pretrained=True,
-    pretrained_top=True,
-    weights="imagenet21k+imagenet2012",
-):
-    """Build ViT-L32. All arguments passed to build_model."""
-    if pretrained_top:
-        classes = validate_pretrained_top(
-            include_top=include_top,
-            pretrained=pretrained,
-            classes=classes,
-            weights=weights,
-        )
-    model = build_model(
-        **CONFIG_L,
-        patch_size=32,
-        name="vit-l32",
-        image_size=image_size,
-        classes=classes,
-        activation=activation,
-        include_top=include_top,
-        representation_size=1024 if weights == "imagenet21k" else None,
-    )
-    if pretrained:
-        load_pretrained(
-            size="L_32",
-            weights=weights,
-            model=model,
-            pretrained_top=pretrained_top,
-            patch_size=32,
-            image_size=image_size,
-        )
+    # if pretrained:
+    #     load_pretrained(
+    #         size="B_16",
+    #         weights=weights,
+    #         model=model,
+    #         pretrained_top=pretrained_top,
+    #         image_size=input_shape,
+    #         patch_size=16,
+    #     )
     return model

@@ -70,7 +70,6 @@ class MultiHeadSelfAttention(tf.keras.layers.Layer):
 
     def build(self, input_shape):
         hidden_size = input_shape[-1]
-        # print(hidden_size)
         num_heads = self.num_heads
         if hidden_size % num_heads != 0:
             raise ValueError(
