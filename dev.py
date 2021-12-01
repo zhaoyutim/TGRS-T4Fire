@@ -49,7 +49,7 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-m', type=str, help='Model to be executed')
     parser.add_argument('-w', type=int, help='Window size')
-    parser.add_argument('-p', type=bool, help='Window size')
+    parser.add_argument('-p', type=str, help='Window size')
 
     args = parser.parse_args()
     model_name = args.m
@@ -131,7 +131,9 @@ if __name__=='__main__':
             tf.keras.metrics.CategoricalAccuracy(name="accuracy")
         ],
     )
-    if not load_pretrained:
+    if load_pretrained=='yes':
+        model.load_weights('/NOBACKUP/zhao2/proj3_' + model_name + 'w' + str(window_size) + '_nopretrained')
+    else:
         print('training in progress')
         history = model.fit(
             x=x_train,
@@ -142,5 +144,3 @@ if __name__=='__main__':
             callbacks=[WandbCallback()],
         )
         model.save('/NOBACKUP/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained')
-    else:
-        model.load_weights('/NOBACKUP/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained')
