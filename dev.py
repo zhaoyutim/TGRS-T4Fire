@@ -16,7 +16,7 @@ import tensorflow as tf
 
 def get_position_embeddings(model):
     pos = tf.keras.Model(model.input, model.layers[1].output)
-    patch = np.zeros((1, 10, 45))
+    patch = np.zeros((1, 10, pow(window_size,2)*5))
     positional_embeddings = pos.predict(patch)
     num_patches=10
     output_heatmap = np.zeros((num_patches, num_patches))
@@ -58,10 +58,10 @@ if __name__=='__main__':
 
     x_dataset = np.load('/NOBACKUP/zhao2/proj3_train_w'+str(window_size)+'.npy')
     y_dataset = np.zeros((x_dataset.shape[0],x_dataset.shape[1],2))
-    y_dataset[: ,:, 0] = x_dataset[:, :, 45] == 0
-    y_dataset[:, :, 1] = x_dataset[:, :, 45] > 0
+    y_dataset[: ,:, 0] = x_dataset[:, :, pow(window_size,2)*5] == 0
+    y_dataset[:, :, 1] = x_dataset[:, :, pow(window_size,2)*5] > 0
 
-    x_train, x_test, y_train, y_test = train_test_split(x_dataset[:,:,:45], y_dataset, test_size=0.2)
+    x_train, x_test, y_train, y_test = train_test_split(x_dataset[:,:,:pow(window_size,2)*5], y_dataset, test_size=0.2)
 
     print(x_train.shape)
     print(y_train.shape)
@@ -73,7 +73,7 @@ if __name__=='__main__':
     weight_decay = 0.0001
 
     num_classes=2
-    input_shape=(10,45)
+    input_shape=(10,pow(window_size,2)*5)
 
     wandb.login()
     wandb.init(project="tokenized_window_size"+ str(window_size) +str(model_name), entity="zhaoyutim")
