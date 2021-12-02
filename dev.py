@@ -126,7 +126,7 @@ if __name__=='__main__':
 
     model.compile(
         optimizer=optimizer,
-        loss=tfa.losses.SigmoidFocalCrossEntropy(from_logits=True),
+        loss=tfa.losses.SigmoidFocalCrossEntropy(from_logits=False),
         metrics=[
             tf.keras.metrics.CategoricalAccuracy(name="accuracy")
         ],
