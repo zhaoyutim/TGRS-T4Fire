@@ -95,7 +95,7 @@ if __name__=='__main__':
             pretrained_top=True
         )
     elif model_name=='vit_tiny':
-        model = vit.vit_small(
+        model = vit.vit_tiny(
             input_shape=input_shape,
             classes=num_classes,
             activation='sigmoid',
