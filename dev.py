@@ -51,21 +51,12 @@ if __name__=='__main__':
     parser.add_argument('-w', type=int, help='Window size')
     parser.add_argument('-p', type=str, help='Window size')
 
+
+
     args = parser.parse_args()
     model_name = args.m
     load_pretrained = args.p
     window_size = args.w
-
-    x_dataset = np.load('/NOBACKUP/zhao2/proj3_train_w'+str(window_size)+'.npy')
-    y_dataset = np.zeros((x_dataset.shape[0],x_dataset.shape[1],2))
-    y_dataset[: ,:, 0] = x_dataset[:, :, pow(window_size,2)*5] == 0
-    y_dataset[:, :, 1] = x_dataset[:, :, pow(window_size,2)*5] > 0
-
-    x_train, x_test, y_train, y_test = train_test_split(x_dataset[:,:,:pow(window_size,2)*5], y_dataset, test_size=0.2)
-
-    print(x_train.shape)
-    print(y_train.shape)
-
 
     batch_size=256
     MAX_EPOCHS = 50
@@ -74,6 +65,34 @@ if __name__=='__main__':
 
     num_classes=2
     input_shape=(10,pow(window_size,2)*5)
+
+    x_dataset = np.load('/NOBACKUP/zhao2/proj3_train_w'+str(window_size)+'.npy')
+    y_dataset = np.zeros((x_dataset.shape[0],x_dataset.shape[1],2))
+    y_dataset[: ,:, 0] = x_dataset[:, :, pow(window_size,2)*5] == 0
+    y_dataset[:, :, 1] = x_dataset[:, :, pow(window_size,2)*5] > 0
+
+    # x_train, x_test, y_train, y_test = train_test_split(x_dataset[:,:,:pow(window_size,2)*5], y_dataset, test_size=0.2)
+    # print(x_train.shape)
+    # print(y_train.shape)
+
+    def make_generator(inputs, labels):
+        def _generator():
+            for input, label in zip(inputs, labels):
+                yield input, label
+
+        return _generator
+
+
+    dataset = tf.data.Dataset.from_generator(make_generator(x_dataset, y_dataset),
+                                             (tf.float32, tf.int16))
+    shuffled_dataset = dataset.shuffle(10000)
+    train_dataset = shuffled_dataset.take(int(y_dataset.shape[0] * 0.8)).repeat(MAX_EPOCHS).batch(batch_size)
+    val_dataset = shuffled_dataset.skip(int(y_dataset.shape[0] * 0.8))
+    val_dataset = val_dataset.take(int(y_dataset.shape[0] * 0.2)).repeat(MAX_EPOCHS).batch(batch_size)
+
+
+
+
 
     wandb.login()
     wandb.init(project="tokenized_window_size"+ str(window_size) +str(model_name), entity="zhaoyutim")
@@ -136,9 +155,10 @@ if __name__=='__main__':
     else:
         print('training in progress')
         history = model.fit(
-            x=x_train,
-            y=y_train,
+            x=train_dataset,
             batch_size=batch_size,
+            val_dataset=val_dataset,
+            steps_per_epoch=train_dataset.shape[0]//batch_size,
             epochs=MAX_EPOCHS,
             validation_split=0.1,
             callbacks=[WandbCallback()],
