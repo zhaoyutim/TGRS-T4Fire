@@ -105,52 +105,54 @@ if __name__=='__main__':
     #   "num_heads":num_heads,
     #   "transformer_layers": transformer_layers
     # }
-    if model_name == 'vit_small':
-        model = vit.vit_small(
-            input_shape=input_shape,
-            classes=num_classes,
-            activation='sigmoid',
-            pretrained=True,
-            include_top=True,
-            pretrained_top=True
-        )
-    elif model_name=='vit_tiny':
-        model = vit.vit_tiny(
-            input_shape=input_shape,
-            classes=num_classes,
-            activation='sigmoid',
-            pretrained=True,
-            include_top=True,
-            pretrained_top=True
-        )
-    elif model_name == 'gru20':
-        gru = GRUModel(input_shape, num_classes, 20, 256, 'sigmoid')
-        model = gru.model
-    elif model_name=='vit_base':
-        model = vit.vit_base(
-            input_shape=input_shape,
-            classes=num_classes,
-            activation='sigmoid',
-            pretrained=True,
-            include_top=True,
-            pretrained_top=True
-        )
-    else:
-        raise('no suport model')
+    strategy = tf.distribute.MirroredStrategy()
+    with strategy.scope():
+        if model_name == 'vit_small':
+            model = vit.vit_small(
+                input_shape=input_shape,
+                classes=num_classes,
+                activation='sigmoid',
+                pretrained=True,
+                include_top=True,
+                pretrained_top=True
+            )
+        elif model_name=='vit_tiny':
+            model = vit.vit_tiny(
+                input_shape=input_shape,
+                classes=num_classes,
+                activation='sigmoid',
+                pretrained=True,
+                include_top=True,
+                pretrained_top=True
+            )
+        elif model_name == 'gru20':
+            gru = GRUModel(input_shape, num_classes, 20, 256, 'sigmoid')
+            model = gru.model
+        elif model_name=='vit_base':
+            model = vit.vit_base(
+                input_shape=input_shape,
+                classes=num_classes,
+                activation='sigmoid',
+                pretrained=True,
+                include_top=True,
+                pretrained_top=True
+            )
+        else:
+            raise('no suport model')
 
-    model.summary()
+        model.summary()
 
-    optimizer = tfa.optimizers.AdamW(
-        learning_rate=learning_rate, weight_decay=weight_decay
-    )
+        optimizer = tfa.optimizers.AdamW(
+            learning_rate=learning_rate, weight_decay=weight_decay
+        )
 
-    model.compile(
-        optimizer=optimizer,
-        loss=tfa.losses.SigmoidFocalCrossEntropy(from_logits=False),
-        metrics=[
-            tf.keras.metrics.CategoricalAccuracy(name="accuracy")
-        ],
-    )
+        model.compile(
+            optimizer=optimizer,
+            loss=tfa.losses.SigmoidFocalCrossEntropy(from_logits=False),
+            metrics=[
+                tf.keras.metrics.CategoricalAccuracy(name="accuracy")
+            ],
+        )
     if load_pretrained=='yes':
         model.load_weights('/NOBACKUP/zhao2/proj3_' + model_name + 'w' + str(window_size) + '_nopretrained')
     else:
