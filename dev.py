@@ -153,6 +153,12 @@ if __name__=='__main__':
                 tf.keras.metrics.CategoricalAccuracy(name="accuracy")
             ],
         )
+
+    options = tf.data.Options()
+    options.experimental_distribute.auto_shard_policy = tf.data.experimental.AutoShardPolicy.OFF
+    train_dataset = train_dataset.with_options(options)
+    val_dataset = val_dataset.with_options(options)
+
     if load_pretrained=='yes':
         model.load_weights('/NOBACKUP/zhao2/proj3_' + model_name + 'w' + str(window_size) + '_nopretrained')
     else:
