@@ -16,3 +16,4 @@ weights/
 venv
 data
 plt
+wandb
