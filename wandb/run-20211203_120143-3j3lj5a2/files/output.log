@@ -1,0 +1,50 @@
+Model: "vit-b16"
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to
+==================================================================================================
+input_1 (InputLayer)            [(None, 10, 45)]     0
+__________________________________________________________________________________________________
+patch_encoder (PatchEncoder)    (10, 768)            7680        input_1[0][0]
+__________________________________________________________________________________________________
+dense (Dense)                   (None, 10, 768)      35328       input_1[0][0]
+__________________________________________________________________________________________________
+tf.__operators__.add (TFOpLambd (None, 10, 768)      0           patch_encoder[0][0]
+                                                                 dense[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_0 (Tra ((None, 10, 768), (N 7087872     tf.__operators__.add[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_1 (Tra ((None, 10, 768), (N 7087872     Transformer/encoderblock_0[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_2 (Tra ((None, 10, 768), (N 7087872     Transformer/encoderblock_1[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_3 (Tra ((None, 10, 768), (N 7087872     Transformer/encoderblock_2[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_4 (Tra ((None, 10, 768), (N 7087872     Transformer/encoderblock_3[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_5 (Tra ((None, 10, 768), (N 7087872     Transformer/encoderblock_4[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_6 (Tra ((None, 10, 768), (N 7087872     Transformer/encoderblock_5[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_7 (Tra ((None, 10, 768), (N 7087872     Transformer/encoderblock_6[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_8 (Tra ((None, 10, 768), (N 7087872     Transformer/encoderblock_7[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_9 (Tra ((None, 10, 768), (N 7087872     Transformer/encoderblock_8[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_10 (Tr ((None, 10, 768), (N 7087872     Transformer/encoderblock_9[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_11 (Tr ((None, 10, 768), (N 7087872     Transformer/encoderblock_10[0][0]
+__________________________________________________________________________________________________
+Transformer/encoder_norm (Layer (None, 10, 768)      1536        Transformer/encoderblock_11[0][0]
+__________________________________________________________________________________________________
+head (Dense)                    (None, 10, 2)        1538        Transformer/encoder_norm[0][0]
+==================================================================================================
+Total params: 85,100,546
+Trainable params: 85,100,546
+Non-trainable params: 0
+__________________________________________________________________________________________________
+training in progress
+/geoinfo_vol1/home/z/h/zhao2/vit-keras/vit_keras/utils.py:207: UserWarning: Did not use the following weights: {'Transformer/posembed_input/pos_embedding', 'embedding/bias', 'head/kernel', 'head/bias', 'embedding/kernel', 'cls'}
+  warnings.warn(f"Did not use the following weights: {unused}", UserWarning)
+/geoinfo_vol1/home/z/h/zhao2/vit-keras/vit_keras/utils.py:212: UserWarning: Only set 194 of 199 weights.
+  f"Only set {target_keys_set} of {target_keys_all} weights.", UserWarning

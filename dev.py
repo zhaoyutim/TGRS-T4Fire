@@ -66,12 +66,12 @@ if __name__=='__main__':
     num_classes=2
     input_shape=(10,pow(window_size,2)*5)
 
-    x_dataset = np.load('/NOBACKUP/zhao2/proj3_train_w'+str(window_size)+'.npy')
+    x_dataset = np.load('/NOBACKUP/zhao2/proj3_train_v2_w'+str(window_size)+'.npy')
     y_dataset = np.zeros((x_dataset.shape[0],x_dataset.shape[1],2))
     y_dataset[: ,:, 0] = x_dataset[:, :, pow(window_size,2)*5] == 0
     y_dataset[:, :, 1] = x_dataset[:, :, pow(window_size,2)*5] > 0
 
-    # x_train, x_test, y_train, y_test = train_test_split(x_dataset[:,:,:pow(window_size,2)*5], y_dataset, test_size=0.2)
+    x_train, x_val, y_train, y_val = train_test_split(x_dataset[:,:,:pow(window_size,2)*5], y_dataset, test_size=0.2)
     # print(x_train.shape)
     # print(y_train.shape)
 
@@ -83,12 +83,13 @@ if __name__=='__main__':
         return _generator
 
 
-    dataset = tf.data.Dataset.from_generator(make_generator(x_dataset, y_dataset),
+    train_dataset = tf.data.Dataset.from_generator(make_generator(x_train, y_train),
                                              (tf.float32, tf.int16))
-    shuffled_dataset = dataset.shuffle(10000)
-    train_dataset = shuffled_dataset.take(int(y_dataset.shape[0] * 0.8)).repeat(MAX_EPOCHS).batch(batch_size)
-    val_dataset = shuffled_dataset.skip(int(y_dataset.shape[0] * 0.8))
-    val_dataset = val_dataset.take(int(y_dataset.shape[0] * 0.2)).repeat(MAX_EPOCHS).batch(batch_size)
+    val_dataset = tf.data.Dataset.from_generator(make_generator(x_val, y_val),
+                                             (tf.float32, tf.int16)) 
+
+    train_dataset = train_dataset.shuffle(batch_size).repeat(MAX_EPOCHS).batch(batch_size)
+    val_dataset = val_dataset.shuffle(batch_size).repeat(MAX_EPOCHS).batch(batch_size)
 
 
 
@@ -157,10 +158,10 @@ if __name__=='__main__':
         history = model.fit(
             x=train_dataset,
             batch_size=batch_size,
-            val_dataset=val_dataset,
-            steps_per_epoch=train_dataset.shape[0]//batch_size,
+            steps_per_epoch=x_train.shape[0]//batch_size,
+            validation_data=val_dataset,
+            validation_steps=x_val.shape[0]//batch_size,
             epochs=MAX_EPOCHS,
-            validation_split=0.1,
             callbacks=[WandbCallback()],
         )
         model.save('/NOBACKUP/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained')

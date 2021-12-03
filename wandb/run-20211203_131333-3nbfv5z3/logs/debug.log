@@ -1,0 +1,23 @@
+2021-12-03 13:13:33,289 INFO    MainThread:70931 [wandb_setup.py:_flush():71] setting env: {}
+2021-12-03 13:13:33,289 INFO    MainThread:70931 [wandb_setup.py:_flush():71] setting login settings: {}
+2021-12-03 13:13:33,290 INFO    MainThread:70931 [wandb_setup.py:_flush():71] setting login settings: {}
+2021-12-03 13:13:33,290 INFO    MainThread:70931 [wandb_init.py:_log_setup():371] Logging user logs to /geoinfo_vol1/home/z/h/zhao2/vit-keras/wandb/run-20211203_131333-3nbfv5z3/logs/debug.log
+2021-12-03 13:13:33,290 INFO    MainThread:70931 [wandb_init.py:_log_setup():372] Logging internal logs to /geoinfo_vol1/home/z/h/zhao2/vit-keras/wandb/run-20211203_131333-3nbfv5z3/logs/debug-internal.log
+2021-12-03 13:13:33,291 INFO    MainThread:70931 [wandb_init.py:init():404] calling init triggers
+2021-12-03 13:13:33,291 INFO    MainThread:70931 [wandb_init.py:init():411] wandb.init called with sweep_config: {}
+config: {}
+2021-12-03 13:13:33,291 INFO    MainThread:70931 [wandb_init.py:init():449] starting backend
+2021-12-03 13:13:33,291 INFO    MainThread:70931 [backend.py:_multiprocessing_setup():97] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2021-12-03 13:13:33,332 INFO    MainThread:70931 [backend.py:ensure_launched():199] starting backend process...
+2021-12-03 13:13:33,362 INFO    MainThread:70931 [backend.py:ensure_launched():205] started backend process with pid: 70995
+2021-12-03 13:13:33,364 INFO    MainThread:70931 [wandb_init.py:init():458] backend started and connected
+2021-12-03 13:13:33,367 INFO    MainThread:70931 [wandb_init.py:init():519] updated telemetry
+2021-12-03 13:13:33,437 INFO    MainThread:70931 [wandb_init.py:init():549] communicating current version
+2021-12-03 13:13:34,530 INFO    MainThread:70931 [wandb_init.py:init():554] got version response 
+2021-12-03 13:13:34,530 INFO    MainThread:70931 [wandb_init.py:init():564] communicating run to backend with 30 second timeout
+2021-12-03 13:13:34,794 INFO    MainThread:70931 [wandb_init.py:init():592] starting run threads in backend
+2021-12-03 13:13:39,554 INFO    MainThread:70931 [wandb_run.py:_console_start():1816] atexit reg
+2021-12-03 13:13:39,556 INFO    MainThread:70931 [wandb_run.py:_redirect():1690] redirect: SettingsConsole.REDIRECT
+2021-12-03 13:13:39,557 INFO    MainThread:70931 [wandb_run.py:_redirect():1695] Redirecting console.
+2021-12-03 13:13:39,563 INFO    MainThread:70931 [wandb_run.py:_redirect():1751] Redirects installed.
+2021-12-03 13:13:39,563 INFO    MainThread:70931 [wandb_init.py:init():619] run started, returning control to user process

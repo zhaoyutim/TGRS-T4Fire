@@ -1,0 +1,126 @@
+2021-12-01 20:10:00.238241: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-12-01 20:10:05.262335: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 8109 MB memory:  -> device: 0, name: NVIDIA GeForce RTX 3080, pci bus id: 0000:1a:00.0, compute capability: 8.6
+2021-12-01 20:10:05.264286: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:1 with 8109 MB memory:  -> device: 1, name: NVIDIA GeForce RTX 3080, pci bus id: 0000:1b:00.0, compute capability: 8.6
+2021-12-01 20:10:05.265800: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:2 with 8109 MB memory:  -> device: 2, name: NVIDIA GeForce RTX 3080, pci bus id: 0000:1c:00.0, compute capability: 8.6
+2021-12-01 20:10:05.267519: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:3 with 8109 MB memory:  -> device: 3, name: NVIDIA GeForce RTX 3080, pci bus id: 0000:1d:00.0, compute capability: 8.6
+2021-12-01 20:10:05.269407: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:4 with 8109 MB memory:  -> device: 4, name: NVIDIA GeForce RTX 3080, pci bus id: 0000:1e:00.0, compute capability: 8.6
+2021-12-01 20:10:05.271381: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:5 with 8109 MB memory:  -> device: 5, name: NVIDIA GeForce RTX 3080, pci bus id: 0000:3d:00.0, compute capability: 8.6
+2021-12-01 20:10:05.273853: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:6 with 8109 MB memory:  -> device: 6, name: NVIDIA GeForce RTX 3080, pci bus id: 0000:3e:00.0, compute capability: 8.6
+2021-12-01 20:10:05.275735: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:7 with 8109 MB memory:  -> device: 7, name: NVIDIA GeForce RTX 3080, pci bus id: 0000:3f:00.0, compute capability: 8.6
+2021-12-01 20:10:05.277663: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:8 with 8109 MB memory:  -> device: 8, name: NVIDIA GeForce RTX 3080, pci bus id: 0000:40:00.0, compute capability: 8.6
+2021-12-01 20:10:05.279718: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:9 with 8109 MB memory:  -> device: 9, name: NVIDIA GeForce RTX 3080, pci bus id: 0000:41:00.0, compute capability: 8.6
+Model: "model"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+input_1 (InputLayer)         [(None, 10, 45)]          0
+_________________________________________________________________
+gru (GRU)                    (None, 10, 256)           232704
+_________________________________________________________________
+gru_1 (GRU)                  (None, 10, 256)           394752
+_________________________________________________________________
+gru_2 (GRU)                  (None, 10, 256)           394752
+_________________________________________________________________
+gru_3 (GRU)                  (None, 10, 256)           394752
+_________________________________________________________________
+gru_4 (GRU)                  (None, 10, 256)           394752
+_________________________________________________________________
+gru_5 (GRU)                  (None, 10, 256)           394752
+_________________________________________________________________
+gru_6 (GRU)                  (None, 10, 256)           394752
+_________________________________________________________________
+gru_7 (GRU)                  (None, 10, 256)           394752
+_________________________________________________________________
+gru_8 (GRU)                  (None, 10, 256)           394752
+_________________________________________________________________
+gru_9 (GRU)                  (None, 10, 256)           394752
+_________________________________________________________________
+gru_10 (GRU)                 (None, 10, 256)           394752
+_________________________________________________________________
+gru_11 (GRU)                 (None, 10, 256)           394752
+_________________________________________________________________
+gru_12 (GRU)                 (None, 10, 256)           394752
+_________________________________________________________________
+gru_13 (GRU)                 (None, 10, 256)           394752
+_________________________________________________________________
+gru_14 (GRU)                 (None, 10, 256)           394752
+_________________________________________________________________
+gru_15 (GRU)                 (None, 10, 256)           394752
+_________________________________________________________________
+gru_16 (GRU)                 (None, 10, 256)           394752
+_________________________________________________________________
+gru_17 (GRU)                 (None, 10, 256)           394752
+_________________________________________________________________
+gru_18 (GRU)                 (None, 10, 256)           394752
+_________________________________________________________________
+gru_19 (GRU)                 (None, 10, 256)           394752
+_________________________________________________________________
+dense (Dense)                (None, 10, 2)             514
+=================================================================
+Total params: 7,733,506
+Trainable params: 7,733,506
+Non-trainable params: 0
+_________________________________________________________________
+training in progress
+Epoch 1/50
+2021-12-01 20:10:11.894319: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+2021-12-01 20:10:30.660810: I tensorflow/stream_executor/cuda/cuda_dnn.cc:369] Loaded cuDNN version 8201
+2021-12-01 20:10:34.322448: I tensorflow/stream_executor/cuda/cuda_blas.cc:1760] TensorFloat-32 will be used for the matrix multiplication. This will only be logged once.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

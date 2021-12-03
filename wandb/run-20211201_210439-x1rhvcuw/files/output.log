@@ -1,0 +1,78 @@
+2021-12-01 21:04:45.487995: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-12-01 21:04:46.013321: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1510] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 8109 MB memory:  -> device: 0, name: NVIDIA GeForce RTX 3080, pci bus id: 0000:1b:00.0, compute capability: 8.6
+2021-12-01 21:04:50.117372: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+Model: "vit-small"
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to
+==================================================================================================
+input_1 (InputLayer)            [(None, 10, 45)]     0
+__________________________________________________________________________________________________
+patch_encoder (PatchEncoder)    (10, 384)            3840        input_1[0][0]
+__________________________________________________________________________________________________
+dense (Dense)                   (None, 10, 384)      17664       input_1[0][0]
+__________________________________________________________________________________________________
+tf.__operators__.add (TFOpLambd (None, 10, 384)      0           patch_encoder[0][0]
+                                                                 dense[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_0 (Tra ((None, 10, 384), (N 1872896     tf.__operators__.add[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_1 (Tra ((None, 10, 384), (N 1872896     Transformer/encoderblock_0[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_2 (Tra ((None, 10, 384), (N 1872896     Transformer/encoderblock_1[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_3 (Tra ((None, 10, 384), (N 1872896     Transformer/encoderblock_2[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_4 (Tra ((None, 10, 384), (N 1872896     Transformer/encoderblock_3[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_5 (Tra ((None, 10, 384), (N 1872896     Transformer/encoderblock_4[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_6 (Tra ((None, 10, 384), (N 1872896     Transformer/encoderblock_5[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_7 (Tra ((None, 10, 384), (N 1872896     Transformer/encoderblock_6[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_8 (Tra ((None, 10, 384), (N 1872896     Transformer/encoderblock_7[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_9 (Tra ((None, 10, 384), (N 1872896     Transformer/encoderblock_8[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_10 (Tr ((None, 10, 384), (N 1872896     Transformer/encoderblock_9[0][0]
+__________________________________________________________________________________________________
+Transformer/encoderblock_11 (Tr ((None, 10, 384), (N 1872896     Transformer/encoderblock_10[0][0]
+__________________________________________________________________________________________________
+Transformer/encoder_norm (Layer (None, 10, 384)      768         Transformer/encoderblock_11[0][0]
+__________________________________________________________________________________________________
+head (Dense)                    (None, 10, 2)        770         Transformer/encoder_norm[0][0]
+==================================================================================================
+Total params: 22,497,794
+Trainable params: 22,497,794
+Non-trainable params: 0
+__________________________________________________________________________________________________
+training in progress
+Epoch 1/50
+  15/2823 [..............................] - ETA: 4:01 - loss: 0.5392 - accuracy: 0.7898
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
