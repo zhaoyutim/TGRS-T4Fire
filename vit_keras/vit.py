@@ -266,7 +266,6 @@ def build_model_patch_segment(
     name: str,
     window_size: int,
     mlp_dim: int,
-    classes: int,
     dropout=0.1,
     activation="linear",
     include_top=True,
@@ -310,14 +309,13 @@ def build_model_patch_segment(
             representation_size, name="pre_logits", activation="tanh"
         )(y)
     if include_top:
-        y = tf.keras.layers.Dense(window_size, name="head", activation=activation)(y)
+        y = tf.keras.layers.Dense(pow(window_size,2), name="head", activation=activation)(y)
     return tf.keras.models.Model(inputs=x, outputs=y, name=name)
 
 
 
 def vit_small_patch_segment(
     input_shape = (10,45),
-    classes=2,
     activation="linear",
     include_top=True,
     window_size=3,
@@ -329,7 +327,6 @@ def vit_small_patch_segment(
         **CONFIG_S,
         name="vit-small",
         input_shape=input_shape,
-        classes=classes,
         window_size=window_size,
         activation=activation,
         include_top=include_top,
