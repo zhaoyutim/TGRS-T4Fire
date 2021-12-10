@@ -126,7 +126,7 @@ if __name__=='__main__':
                 pretrained_top=True
             )
         elif model_name == 'gru20':
-            gru = GRUModel(input_shape, num_classes, 20, 256, 'sigmoid')
+            gru = GRUModel(input_shape, num_classes)
             model = gru.model
         elif model_name=='vit_base':
             model = vit.vit_base(
