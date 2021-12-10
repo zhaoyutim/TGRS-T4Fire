@@ -6,7 +6,7 @@ class TokenizeProcessor:
         self.array = np.load(data_path).transpose((0, 3, 4, 1, 2))
 
     def tokenizing(self, window_size):
-        output_shape = (self.array.shape[0], self.array.shape[1], self.array.shape[2], self.array.shape[3], (self.array.shape[4]-1) * pow(window_size, 2)+1)
+        output_shape = (self.array.shape[0], self.array.shape[1], self.array.shape[2], self.array.shape[3], (self.array.shape[4]-2) * pow(window_size, 2)+2)
 
         output_array = np.zeros(output_shape)
         padding = window_size // 2
@@ -49,7 +49,7 @@ class TokenizeProcessor:
         print(output_array.shape)
         return output_array, label_array
 
-    def flatten_window(self, array, window_size):
+    def flatten_window_patch_seg(self, array, window_size):
         output_array = np.zeros((array.shape[2], (array.shape[3]-1)*pow(window_size,2)))
         label = np.zeros((array.shape[2], pow(window_size, 2)))
         for time in range(array.shape[2]):
@@ -57,17 +57,27 @@ class TokenizeProcessor:
             label[time, :] = array[window_size//2, window_size//2, time, 5].flatten('F')
         return output_array, label
 
+    def flatten_window(self, array, window_size):
+        print(array.shape)
+        output_array = np.zeros((array.shape[2], (array.shape[3]-2)*pow(window_size,2)+2))
+        for time in range(array.shape[2]):
+            output_array[time, :output_array.shape[1]-2] = array[:, :, time, :5].flatten('F')
+            output_array[time, output_array.shape[1]-2] = array[window_size//2, window_size//2, time, 5]
+            output_array[time, output_array.shape[1]-1] = array[window_size // 2, window_size // 2, time, 6]
+        return output_array
+
+
 
 if __name__=='__main__':
-    window_size = 3
-    tokenize_processor = TokenizeProcessor('/Users/zhaoyu/PycharmProjects/CalFireMonitoring/data_train_proj3/proj3_train_img_v2.npy')
-    tokenized_array, label_array = tokenize_processor.tokenizing_patch_segment(window_size)
+    window_size = 1
+    tokenize_processor = TokenizeProcessor('../data/proj3_creek_fire_img.npy')
+    tokenized_array = tokenize_processor.tokenizing(window_size)
     np.nan_to_num(tokenized_array)
-    # np.save('../data/proj3_test_w'+str(window_size)+'.npy', tokenized_array.reshape(-1,10,pow(window_size,2)*5+1))
-    np.save('../data/proj3_test_w' + str(window_size) + 'patch_seg.npy',
-            tokenized_array)
-    np.save('../data/proj3_test_w' + str(window_size) + 'label.npy',
-            label_array)
+    np.save('../data/proj3_creek_fire_w'+str(window_size)+'.npy', tokenized_array.reshape(-1,10,pow(window_size,2)*5+2))
+    # np.save('../data/proj3_test_w' + str(window_size) + 'patch_seg.npy',
+    #         tokenized_array)
+    # np.save('../data/proj3_test_w' + str(window_size) + 'label.npy',
+    #         label_array)
     # for i in range(tokenized_array.shape[0]):
     #     for j in range(tokenized_array.shape[3]):
     #         plt.subplot(211)
@@ -78,7 +88,7 @@ if __name__=='__main__':
     #                         tokenized_array[i, :, :, j, ch_label].max() - tokenized_array[i, :, :, j, ch_label].min()))
     #         plt.subplot(212)
     #         plt.imshow(
-    #             (label_array[i, :, :, j, ch_i4] - tokenized_array[i, :, :, j, ch_i4].min()) - (
+    #             (tokenized_array[i, :, :, j, ch_i4] - tokenized_array[i, :, :, j, ch_i4].min()) - (
     #                         tokenized_array[i, :, :, j, ch_i4].max() - tokenized_array[i, :, :, j, ch_i4].min()))
     #         plt.savefig('../plt/' + str(i) + str(j) + '.png')
     #         plt.show()

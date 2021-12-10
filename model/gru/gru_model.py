@@ -39,13 +39,30 @@ class GRUModel:
         SS_tot = K.sum(K.square(y_true - K.mean(y_true)))
         return (1 - SS_res / (SS_tot + K.epsilon()))
 
-    def get_model(self, activation):
-        input = tf.keras.layers.Input(shape=self.input_shape)
-        x = tf.keras.layers.GRU(self.projection_dims, dropout=0.2, return_sequences=True)(input)
-        for _ in range(self.gru_layers-1):
-            x = tf.keras.layers.GRU(self.projection_dims, dropout=0.2, return_sequences=True)(x)
-        output = tf.keras.layers.Dense(self.num_classes, activation=activation)(x)
-        gru_model = tf.keras.Model(inputs=input, outputs=output)
+    def get_model(self, input_shape, num_class):
+        gru_model = tf.keras.models.Sequential([
+            tf.keras.layers.GRU(256, input_shape=input_shape, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
+            tf.keras.layers.Dense(num_class, activation='sigmoid')
+        ])
         return gru_model
 
     def get_model_10_layers(self, input_shape, num_class):
