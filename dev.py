@@ -66,7 +66,7 @@ if __name__=='__main__':
     num_classes=2
     input_shape=(10,pow(window_size,2)*5)
 
-    x_dataset = np.load('/NOBACKUP/zhao2/proj3_train_v2_w'+str(window_size)+'.npy')
+    x_dataset = np.load('/geoinfo_vol1/zhao2/proj3_train_v2_w'+str(window_size)+'.npy')
     y_dataset = np.zeros((x_dataset.shape[0],x_dataset.shape[1],2))
     y_dataset[: ,:, 0] = x_dataset[:, :, pow(window_size,2)*5] == 0
     y_dataset[:, :, 1] = x_dataset[:, :, pow(window_size,2)*5] > 0
@@ -160,7 +160,7 @@ if __name__=='__main__':
     val_dataset = val_dataset.with_options(options)
 
     if load_pretrained=='yes':
-        model.load_weights('/NOBACKUP/zhao2/proj3_' + model_name + 'w' + str(window_size) + '_nopretrained')
+        model.load_weights('/geoinfo_vol1/zhao2/proj3_' + model_name + 'w' + str(window_size) + '_nopretrained')
     else:
         print('training in progress')
         history = model.fit(
@@ -172,4 +172,4 @@ if __name__=='__main__':
             epochs=MAX_EPOCHS,
             callbacks=[WandbCallback()],
         )
-        model.save('/NOBACKUP/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained')
+        model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained')

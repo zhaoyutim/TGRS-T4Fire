@@ -11,7 +11,7 @@ class GRUModel:
         # self.gru_layers=gru_layers
         self.num_classes = num_classes
         # self.projection_dims=projection_dims
-        # self.model = self.get_model(activation)
+        self.model = self.get_model(input_shape, num_classes)
         self.model_10_layers = self.get_model_10_layers(input_shape, num_classes)
 
     def recall_m(self, y_true, y_pred):
