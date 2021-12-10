@@ -6,12 +6,12 @@ from sklearn.model_selection import train_test_split
 import tensorflow as tf
 import keras.backend as K
 class GRUModel:
-    def __init__(self, input_shape, num_classes, gru_layers, projection_dims, activation):
+    def __init__(self, input_shape, num_classes):
         self.input_shape = input_shape
-        self.gru_layers=gru_layers
+        # self.gru_layers=gru_layers
         self.num_classes = num_classes
-        self.projection_dims=projection_dims
-        self.model = self.get_model(activation)
+        # self.projection_dims=projection_dims
+        # self.model = self.get_model(activation)
         self.model_10_layers = self.get_model_10_layers(input_shape, num_classes)
 
     def recall_m(self, y_true, y_pred):
