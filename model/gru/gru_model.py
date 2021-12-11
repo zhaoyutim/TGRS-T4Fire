@@ -67,16 +67,16 @@ class GRUModel:
 
     def get_model_10_layers(self, input_shape, num_class):
         gru_model = tf.keras.models.Sequential([
-            tf.keras.layers.GRU(256, input_shape=input_shape, return_sequences=True),
+            tf.keras.layers.GRU(512, input_shape=input_shape, return_sequences=True),
+            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
             tf.keras.layers.GRU(256, dropout=0.2, return_sequences=True),
             tf.keras.layers.GRU(128, dropout=0.2, return_sequences=True),
             tf.keras.layers.GRU(128, dropout=0.2, return_sequences=True),
-            tf.keras.layers.GRU(64, dropout=0.2, return_sequences=True),
-            tf.keras.layers.GRU(64, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(64, dropout=0.2,return_sequences=True),
+            tf.keras.layers.GRU(64, dropout=0.2,return_sequences=True),
             tf.keras.layers.GRU(32, dropout=0.2,return_sequences=True),
             tf.keras.layers.GRU(32, dropout=0.2,return_sequences=True),
-            tf.keras.layers.GRU(16, dropout=0.2,return_sequences=True),
-            tf.keras.layers.GRU(16, dropout=0.2,return_sequences=True),
             tf.keras.layers.Dense(num_class, activation='sigmoid')
         ])
         return gru_model
