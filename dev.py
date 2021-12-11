@@ -127,7 +127,7 @@ if __name__=='__main__':
             )
         elif model_name == 'gru20':
             gru = GRUModel(input_shape, num_classes)
-            model = gru.model
+            model = gru.get_model(input_shape, num_classes)
         elif model_name=='vit_base':
             model = vit.vit_base(
                 input_shape=input_shape,
