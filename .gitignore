@@ -17,3 +17,4 @@ venv
 data
 plt
 wandb
+plt_test

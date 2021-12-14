@@ -133,7 +133,7 @@ if __name__=='__main__':
                 input_shape=input_shape,
                 classes=num_classes,
                 activation='sigmoid',
-                pretrained=True,
+                pretrained=False,
                 include_top=True,
                 pretrained_top=True
             )

@@ -70,10 +70,10 @@ class TokenizeProcessor:
 
 if __name__=='__main__':
     window_size = 1
-    tokenize_processor = TokenizeProcessor('../data/proj3_creek_fire_img.npy')
+    tokenize_processor = TokenizeProcessor('../data/proj3_lytton_fire_img.npy')
     tokenized_array = tokenize_processor.tokenizing(window_size)
     np.nan_to_num(tokenized_array)
-    np.save('../data/proj3_creek_fire_w'+str(window_size)+'.npy', tokenized_array.reshape(-1,10,pow(window_size,2)*5+2))
+    np.save('../data/proj3_lytton_fire_w'+str(window_size)+'.npy', tokenized_array.reshape(-1,10,pow(window_size,2)*5+2))
     # np.save('../data/proj3_test_w' + str(window_size) + 'patch_seg.npy',
     #         tokenized_array)
     # np.save('../data/proj3_test_w' + str(window_size) + 'label.npy',
