@@ -47,7 +47,6 @@ def wandb_config(model_name, backbone):
     # }
 
 if __name__=='__main__':
-    strategy = tf.distribute.MultiWorkerMirroredStrategy()
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-m', type=str, help='Model to be executed')
     parser.add_argument('-p', type=str, help='Load trained weights')
@@ -68,7 +67,7 @@ if __name__=='__main__':
 
     wandb_config(model_name, backbone)
 
-
+    strategy = tf.distribute.MirroredStrategy()
     with strategy.scope():
         if model_name == 'fpn':
             input = tf.keras.Input(shape=(None, None, 5))
