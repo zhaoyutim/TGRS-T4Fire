@@ -97,7 +97,7 @@ if __name__=='__main__':
             output_resize = tf.keras.layers.Resizing(224,224)(output)
             model = tf.keras.Model(input, output_resize, name=model_name)
         elif model_name == 'swinunet':
-            input = tf.keras.Input(shape=(None, None, 3))
+            input = tf.keras.Input(shape=(None, None, 5))
             conv1 = tf.keras.layers.Conv2D(3, 3, activation = 'linear', padding = 'same', kernel_initializer = 'he_normal')(input)
             basemodel = models.swin_unet_2d((224, 224, 3), filter_num_begin=64, n_labels=3, depth=4, stack_num_down=2, stack_num_up=2,
                                         patch_size=(2, 2), num_heads=[4, 8, 8, 8], window_size=[4, 2, 2, 2], num_mlp=512,
