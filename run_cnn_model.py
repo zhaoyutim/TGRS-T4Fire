@@ -7,9 +7,6 @@ import wandb
 from sklearn.model_selection import train_test_split
 import segmentation_models as sm
 from wandb.integration.keras import WandbCallback
-from segmentation_models import Unet, Linknet
-from segmentation_models import get_preprocessing
-from segmentation_models.losses import bce_dice_loss, bce_jaccard_loss
 from segmentation_models.metrics import iou_score, f1_score
 from segmentation_models import Unet, Linknet, PSPNet, FPN
 
@@ -59,7 +56,7 @@ if __name__=='__main__':
     backbone = args.bb
     sm.set_framework('tf.keras')
     batch_size=args.b
-    MAX_EPOCHS=50
+    MAX_EPOCHS=100
     learning_rate = 0.0001
     weight_decay = 0.00001
 
