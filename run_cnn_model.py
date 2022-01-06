@@ -63,13 +63,11 @@ if __name__=='__main__':
     learning_rate = 0.001
     weight_decay = 0.0001
 
-    num_classes=2
-
     train_dataset, val_dataset= get_dateset(batch_size)
 
     wandb_config(model_name, backbone)
 
-    strategy = tf.distribute.MirroredStrategy()
+    strategy = tf.distribute.MultiWorkerMirroredStrategy()
     with strategy.scope():
         if model_name == 'fpn':
             input = tf.keras.Input(shape=(None, None, 5))

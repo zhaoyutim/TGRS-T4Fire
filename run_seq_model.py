@@ -75,7 +75,7 @@ if __name__=='__main__':
 
     wandb_config(window_size, model_name)
 
-    strategy = tf.distribute.MirroredStrategy()
+    strategy = tf.distribute.MultiWorkerMirroredStrategy()
     with strategy.scope():
         if model_name == 'vit_small':
             model = vit.vit_small(
