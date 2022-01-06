@@ -1,50 +1,44 @@
 import argparse
 
-import keras.backend as K
 import wandb
-from sklearn.metrics.pairwise import cosine_similarity
-import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow_addons as tfa
 from sklearn.model_selection import train_test_split
 from wandb.integration.keras import WandbCallback
 
-from model.gru.gru_model import GRUModel
-from vit_keras import vit
+from model.vit_keras import vit
 import tensorflow as tf
 
-
-def get_position_embeddings(model):
-    pos = tf.keras.Model(model.input, model.layers[1].output)
-    patch = np.zeros((1, 10, pow(window_size,2)*5))
-    positional_embeddings = pos.predict(patch)
-    num_patches=10
-    output_heatmap = np.zeros((num_patches, num_patches))
-
-    output_heatmap = cosine_similarity(positional_embeddings, positional_embeddings)
-
-    fig, ax = plt.subplots()
-    im = plt.imshow(output_heatmap)
-    # Show all ticks and label them with the respective list entries
-    plt.xticks(np.arange(num_patches))
-    plt.yticks(np.arange(num_patches))
-
-    # Rotate the tick labels and set their alignment.
-    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
-             rotation_mode="anchor")
-
-    # Loop over data dimensions and create text annotations.
-    for i in range(num_patches):
-        for j in range(num_patches):
-            text = plt.text(j, i, np.around(output_heatmap[i, j], decimals=2),
-                            ha="center", va="center", color="w")
-    plt.colorbar()
-    plt.title('Positional embedding Similarity')
-    plt.xlabel('Sequence number')
-    plt.ylabel('Sequence number')
-    fig.tight_layout()
-    plt.show()
-
+# def get_position_embeddings(model):
+#     pos = tf.keras.Model(model.input, model.layers[1].output)
+#     patch = np.zeros((1, 10, pow(window_size,2)*5))
+#     positional_embeddings = pos.predict(patch)
+#     num_patches=10
+#     output_heatmap = np.zeros((num_patches, num_patches))
+#
+#     output_heatmap = cosine_similarity(positional_embeddings, positional_embeddings)
+#
+#     fig, ax = plt.subplots()
+#     im = plt.imshow(output_heatmap)
+#     # Show all ticks and label them with the respective list entries
+#     plt.xticks(np.arange(num_patches))
+#     plt.yticks(np.arange(num_patches))
+#
+#     # Rotate the tick labels and set their alignment.
+#     plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+#              rotation_mode="anchor")
+#
+#     # Loop over data dimensions and create text annotations.
+#     for i in range(num_patches):
+#         for j in range(num_patches):
+#             text = plt.text(j, i, np.around(output_heatmap[i, j], decimals=2),
+#                             ha="center", va="center", color="w")
+#     plt.colorbar()
+#     plt.title('Positional embedding Similarity')
+#     plt.xlabel('Sequence number')
+#     plt.ylabel('Sequence number')
+#     fig.tight_layout()
+#     plt.show()
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-w', type=int, help='Window size')

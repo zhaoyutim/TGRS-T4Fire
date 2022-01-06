@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from vit_keras import vit
+from model.vit_keras import vit
 
 
 def test_saving():

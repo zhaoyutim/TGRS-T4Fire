@@ -1,7 +1,8 @@
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-from vit_keras import vit
+from model.vit_keras import vit
+
 if __name__=='__main__':
     input_shape=(10,45)
     num_classes=2
