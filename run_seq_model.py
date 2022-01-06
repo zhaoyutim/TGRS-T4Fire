@@ -52,6 +52,7 @@ def wandb_config(window_size, model_name):
     # }
 
 if __name__=='__main__':
+    strategy = tf.distribute.MultiWorkerMirroredStrategy()
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-m', type=str, help='Model to be executed')
     parser.add_argument('-w', type=int, help='Window size')
@@ -75,7 +76,7 @@ if __name__=='__main__':
 
     wandb_config(window_size, model_name)
 
-    strategy = tf.distribute.MultiWorkerMirroredStrategy()
+
     with strategy.scope():
         if model_name == 'vit_small':
             model = vit.vit_small(
