@@ -60,8 +60,8 @@ if __name__=='__main__':
     sm.set_framework('tf.keras')
     batch_size=args.b
     MAX_EPOCHS=50
-    learning_rate = 0.001
-    weight_decay = 0.0001
+    learning_rate = 0.0001
+    weight_decay = 0.00001
 
     train_dataset, val_dataset= get_dateset(batch_size)
 
@@ -121,6 +121,6 @@ if __name__=='__main__':
             batch_size=batch_size,
             epochs=MAX_EPOCHS,
             validation_data=val_dataset,
-            # callbacks=[WandbCallback()],
+            callbacks=[WandbCallback()],
         )
         model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'_pretrained_'+backbone)
