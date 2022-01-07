@@ -17,13 +17,26 @@ def get_dateset(batch_size):
     print(train_dataset.shape)
     y_dataset = train_dataset[:,:,:,5]>0
     x_train, x_val, y_train, y_val = train_test_split(train_dataset[:,:,:,:5].astype(float), y_dataset.astype(float), test_size=0.2)
-    train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
-    val_dataset = tf.data.Dataset.from_tensor_slices((x_val, y_val))
+    def make_generator(inputs, labels):
+        def _generator():
+            for input, label in zip(inputs, labels):
+                yield input, label
 
-    train_dataset = train_dataset.shuffle(batch_size).batch(batch_size)
-    val_dataset = val_dataset.shuffle(batch_size).batch(batch_size)
+        return _generator
 
-    return train_dataset, val_dataset
+
+    train_dataset = tf.data.Dataset.from_generator(make_generator(x_train, y_train),
+                                                   (tf.float32, tf.int16))
+    val_dataset = tf.data.Dataset.from_generator(make_generator(x_val, y_val),
+                                                 (tf.float32, tf.int16))
+
+    train_dataset = train_dataset.shuffle(batch_size).repeat(MAX_EPOCHS).batch(batch_size)
+    val_dataset = val_dataset.shuffle(batch_size).repeat(MAX_EPOCHS).batch(batch_size)
+
+    steps_per_epoch = x_train.shape[0]//batch_size
+    validation_steps = x_val.shape[0]//batch_size
+
+    return train_dataset, val_dataset, steps_per_epoch, validation_steps
 
 def dice_coef(y_true, y_pred):
     y_true_f = tf.reshape(y_true,[-1])
@@ -61,7 +74,7 @@ if __name__=='__main__':
     learning_rate = 0.0001
     weight_decay = 0.00001
 
-    train_dataset, val_dataset= get_dateset(batch_size)
+    train_dataset, val_dataset, steps_per_epoch, validation_steps = get_dateset(batch_size)
 
     wandb_config(model_name, backbone)
 
@@ -133,8 +146,10 @@ if __name__=='__main__':
         history = model.fit(
             train_dataset,
             batch_size=batch_size,
-            epochs=MAX_EPOCHS,
+            steps_per_epoch=steps_per_epoch,
             validation_data=val_dataset,
+            validation_steps=validation_steps,
+            epochs=MAX_EPOCHS,
             callbacks=[WandbCallback()],
         )
         model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'_pretrained_'+backbone)
