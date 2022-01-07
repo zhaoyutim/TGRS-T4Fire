@@ -25,8 +25,10 @@ def get_dateset(batch_size):
         return _generator
 
 
-    train_dataset = tf.data.Dataset.from_generator(make_generator(x_train, y_train))
-    val_dataset = tf.data.Dataset.from_generator(make_generator(x_val, y_val))
+    train_dataset = tf.data.Dataset.from_generator(make_generator(x_train, y_train),
+                                                   (tf.float32, tf.float32))
+    val_dataset = tf.data.Dataset.from_generator(make_generator(x_val, y_val),
+                                                 (tf.float32, tf.float32))
 
     train_dataset = train_dataset.shuffle(batch_size).repeat(MAX_EPOCHS).batch(batch_size)
     val_dataset = val_dataset.shuffle(batch_size).repeat(MAX_EPOCHS).batch(batch_size)
