@@ -9,7 +9,7 @@ def get_convlstm_unet(input_shape):
     inputs = Input(input_shape)
     conv1 = TimeDistributed(Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(inputs)
     conv1 = TimeDistributed(Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv1)
-    convlstm1 = ConvLSTM2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True )(conv1)
+    # convlstm1 = ConvLSTM2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True )(conv1)
     pool1 = TimeDistributed(MaxPooling2D(pool_size=(2, 2)))(conv1)
 
     conv2 = TimeDistributed(Conv2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(pool1)
@@ -48,7 +48,7 @@ def get_convlstm_unet(input_shape):
     conv8 = TimeDistributed(Conv2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv8)
 
     up9 = TimeDistributed(Conv2D(64, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(TimeDistributed(UpSampling2D(size = (2,2)))(conv8))
-    merge9 = tf.concat([convlstm1,up9], axis = 4)
+    merge9 = tf.concat([conv1,up9], axis = 4)
     conv9 = TimeDistributed(Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(merge9)
     conv9 = TimeDistributed(Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv9)
     conv9 = TimeDistributed(Conv2D(2, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv9)
