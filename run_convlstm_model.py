@@ -86,8 +86,8 @@ if __name__=='__main__':
         model = get_convlstm_unet((10,224,224,5))
     model.summary()
 
-    optimizer = tf.optimizers.Adam(
-        learning_rate=learning_rate
+    optimizer = tfa.optimizers.AdamW(
+        learning_rate=learning_rate, weight_decay=weight_decay
     )
 
     model.compile(optimizer, loss=dice_coef, metrics=[iou_score, f1_score])
