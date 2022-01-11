@@ -126,6 +126,15 @@ if __name__=='__main__':
                                         batch_norm=True, pool=True, unpool='bilinear', name='transunet')
             output = basemodel(conv1)
             model = tf.keras.Model(input, output, name=model_name)
+        elif model_name == 'unet_2d':
+            input = tf.keras.Input(shape=(None, None, 5))
+            conv1 = tf.keras.layers.Conv2D(3, 3, activation = 'linear', padding = 'same', kernel_initializer = 'he_normal')(input)
+            basemodel = models.unet_2d((None, None, 3), [64, 128, 256, 512, 1024], n_labels=2,
+                                       stack_num_down=2, stack_num_up=1,
+                                       activation='GELU', output_activation='Softmax',
+                                       batch_norm=True, pool='max', unpool='nearest', name='unet')
+            output = basemodel(conv1)
+            model = tf.keras.Model(input, output, name=model_name)
         model.summary()
 
         optimizer = tfa.optimizers.AdamW(
