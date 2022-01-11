@@ -87,7 +87,7 @@ if __name__=='__main__':
         model.summary()
 
         optimizer = tf.optimizers.Adam(
-            learning_rate=learning_rate, weight_decay=weight_decay
+            learning_rate=learning_rate
         )
 
         model.compile(optimizer, loss=dice_coef, metrics=[iou_score, f1_score])
