@@ -83,7 +83,7 @@ if __name__=='__main__':
     strategy = tf.distribute.MirroredStrategy()
     with strategy.scope():
         if model_name == 'convlstm_unet':
-            model = get_convlstm_unet((10,224,224,5))
+            model = get_convlstm_unet((None,10,224,224,5))
         model.summary()
 
         optimizer = tf.optimizers.Adam(
