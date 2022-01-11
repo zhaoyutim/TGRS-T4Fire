@@ -18,7 +18,7 @@ def get_dateset(batch_size):
     # train_dataset = np.load('/Users/zhaoyu/PycharmProjects/T4Fire/data/proj3_train_img_v2.npy').transpose((0,1,3,4,2))
     print(train_dataset.shape)
     y_dataset = train_dataset[:,:,:,:,5]>0
-    x_train, x_val, y_train, y_val = train_test_split(train_dataset[:,:,:,:,5].astype(float), y_dataset.astype(float), test_size=0.2)
+    x_train, x_val, y_train, y_val = train_test_split(train_dataset[:,:,:,:,:5].astype(float), y_dataset.astype(float), test_size=0.2)
     def make_generator(inputs, labels):
         def _generator():
             for input, label in zip(inputs, labels):
@@ -83,7 +83,7 @@ if __name__=='__main__':
     strategy = tf.distribute.MirroredStrategy()
     with strategy.scope():
         if model_name == 'convlstm_unet':
-            model = get_convlstm_unet((None,10,224,224,5))
+            model = get_convlstm_unet((10,224,224,5))
         model.summary()
 
         optimizer = tf.optimizers.Adam(
@@ -108,6 +108,6 @@ if __name__=='__main__':
             validation_data=val_dataset,
             validation_steps=validation_steps,
             epochs=MAX_EPOCHS,
-            callbacks=[WandbCallback()],
+            # callbacks=[WandbCallback()],
         )
         model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'_pretrained_'+backbone)
