@@ -9,7 +9,7 @@ def get_convlstm_unet(input_shape):
     inputs = Input(input_shape)
     conv1 = TimeDistributed(Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(inputs)
     conv1 = TimeDistributed(Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv1)
-    convlstm1 = ConvLSTM2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True )(conv1)
+    convlstm1 = ConvLSTM2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True)(conv1)
     pool1 = TimeDistributed(MaxPooling2D(pool_size=(2, 2)))(conv1)
 
     conv2 = TimeDistributed(Conv2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(pool1)
@@ -28,8 +28,8 @@ def get_convlstm_unet(input_shape):
     drop4 = TimeDistributed(Dropout(0.5))(conv4)
     pool4 = TimeDistributed(MaxPooling2D(pool_size=(2, 2)))(drop4)
 
-    conv5 = TimeDistributed(Conv2D(1024, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(pool4)
-    conv5 = TimeDistributed(Conv2D(1024, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv5)
+    conv5 = TimeDistributed(Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(pool4)
+    conv5 = TimeDistributed(Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv5)
     drop5 = TimeDistributed(Dropout(0.5))(conv5)
 
     up6 = TimeDistributed(Conv2D(512, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(TimeDistributed(UpSampling2D(size = (2,2)))(drop5))
