@@ -129,7 +129,7 @@ if __name__=='__main__':
         elif model_name == 'unet_2d':
             input = tf.keras.Input(shape=(None, None, 5))
             conv1 = tf.keras.layers.Conv2D(3, 3, activation = 'linear', padding = 'same', kernel_initializer = 'he_normal')(input)
-            basemodel = models.unet_2d((None, None, 3), [64, 128, 256, 512, 1024], n_labels=2,
+            basemodel = models.unet_2d((None, None, 3), [64, 128, 256, 512, 1024], n_labels=1,
                                        stack_num_down=2, stack_num_up=1,
                                        activation='GELU', output_activation='Softmax',
                                        batch_norm=True, pool='max', unpool='nearest', name='unet')
