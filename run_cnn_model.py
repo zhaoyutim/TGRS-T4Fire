@@ -125,7 +125,7 @@ if __name__=='__main__':
             input = tf.keras.Input(shape=(None, None, 5))
             conv1 = tf.keras.layers.Conv2D(3, 3, activation = 'linear', padding = 'same', kernel_initializer = 'he_normal')(input)
             basemodel = models.transunet_2d((224, 224, 3), filter_num=[64, 128, 256, 512], n_labels=1, stack_num_down=2, stack_num_up=2,
-                                        embed_dim=768, num_mlp=3072, num_heads=12, num_transformer=12,
+                                        embed_dim=256, num_mlp=768, num_heads=3, num_transformer=12,
                                         activation='ReLU', mlp_activation='GELU', output_activation='Sigmoid',
                                         batch_norm=True, pool=True, unpool='bilinear', name='transunet')
             output = basemodel(conv1)
