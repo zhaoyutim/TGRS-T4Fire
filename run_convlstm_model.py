@@ -80,22 +80,22 @@ if __name__=='__main__':
 
     wandb_config(model_name, backbone)
 
-    strategy = tf.distribute.MirroredStrategy()
-    with strategy.scope():
-        if model_name == 'convlstm_unet':
-            model = get_convlstm_unet((10,224,224,5))
-        model.summary()
+    # strategy = tf.distribute.MirroredStrategy()
+    # with strategy.scope():
+    if model_name == 'convlstm_unet':
+        model = get_convlstm_unet((10,224,224,5))
+    model.summary()
 
-        optimizer = tf.optimizers.Adam(
-            learning_rate=learning_rate
-        )
+    optimizer = tf.optimizers.Adam(
+        learning_rate=learning_rate
+    )
 
-        model.compile(optimizer, loss=dice_coef, metrics=[iou_score, f1_score])
+    model.compile(optimizer, loss=dice_coef, metrics=[iou_score, f1_score])
 
-    options = tf.data.Options()
-    options.experimental_distribute.auto_shard_policy = tf.data.experimental.AutoShardPolicy.OFF
-    train_dataset = train_dataset.with_options(options)
-    val_dataset = val_dataset.with_options(options)
+    # options = tf.data.Options()
+    # options.experimental_distribute.auto_shard_policy = tf.data.experimental.AutoShardPolicy.OFF
+    # train_dataset = train_dataset.with_options(options)
+    # val_dataset = val_dataset.with_options(options)
 
     if load_weights== 'yes':
         model.load_weights('/geoinfo_vol1/zhao2/proj3_'+model_name+'_pretrained_'+backbone)
@@ -108,6 +108,6 @@ if __name__=='__main__':
             validation_data=val_dataset,
             validation_steps=validation_steps,
             epochs=MAX_EPOCHS,
-            # callbacks=[WandbCallback()],
+            callbacks=[WandbCallback()],
         )
         model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'_pretrained_'+backbone)
