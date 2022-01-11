@@ -8,22 +8,22 @@ import tensorflow as tf
 def get_convlstm_unet(input_shape):
     inputs = Input(input_shape)
     conv1 = TimeDistributed(Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(inputs)
-    conv1 = TimeDistributed(Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv1)
-    convlstm1 = ConvLSTM2D(64, 5, strides=(3, 3),activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True)(conv1)
+    # conv1 = TimeDistributed(Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv1)
+    convlstm1 = ConvLSTM2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True)(conv1)
     pool1 = TimeDistributed(MaxPooling2D(pool_size=(2, 2)))(conv1)
 
     conv2 = TimeDistributed(Conv2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(pool1)
-    conv2 = TimeDistributed(Conv2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv2)
-    convlstm2 = ConvLSTM2D(128, 5, strides=(3, 3), activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True)(conv2)
+    # conv2 = TimeDistributed(Conv2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv2)
+    convlstm2 = ConvLSTM2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True)(conv2)
     pool2 = TimeDistributed(MaxPooling2D(pool_size=(2, 2)))(conv2)
 
     conv3 = TimeDistributed(Conv2D(256, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(pool2)
-    conv3 =TimeDistributed(Conv2D(256, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv3)
-    convlstm3 = ConvLSTM2D(256, 5, strides=(3, 3),activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True)(conv3)
+    # conv3 =TimeDistributed(Conv2D(256, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv3)
+    convlstm3 = ConvLSTM2D(256, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True)(conv3)
     pool3 = TimeDistributed(MaxPooling2D(pool_size=(2, 2)))(conv3)
 
     conv4 = TimeDistributed(Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(pool3)
-    conv4 = TimeDistributed(Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv4)
+    # conv4 = TimeDistributed(Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv4)
     # convlstm4 = ConvLSTM2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True)(conv4)
     # drop4 = TimeDistributed(Dropout(0.5))(conv4)
     # pool4 = TimeDistributed(MaxPooling2D(pool_size=(2, 2)))(drop4)
@@ -35,7 +35,7 @@ def get_convlstm_unet(input_shape):
     # up6 = TimeDistributed(Conv2D(512, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(drop4)
     # merge6 = tf.concat([conv4,up6], axis = 4)
     conv6 = TimeDistributed(Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv4)
-    conv6 = TimeDistributed(Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv6)
+    # conv6 = TimeDistributed(Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv6)
 
     up7 = TimeDistributed(Conv2D(256, 2, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(TimeDistributed(UpSampling2D(size = (2,2)))(conv6))
     merge7 = tf.concat([convlstm3,up7], axis = 4)
