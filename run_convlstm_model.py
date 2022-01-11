@@ -14,7 +14,7 @@ from model.convlstm_models.convlstm_models import get_convlstm_unet, unet
 
 
 def get_dateset(batch_size):
-    train_dataset = np.load('/geoinfo_vol1/zhao2/proj3_train_img_v2.npy').reshape((-1,6,224,224)).transpose((0,2,3,1))
+    train_dataset = np.load('/geoinfo_vol1/zhao2/proj3_train_img_v2.npy').transpose((0,1,3,4,2))
     # train_dataset = np.load('/Users/zhaoyu/PycharmProjects/T4Fire/data/proj3_train_img_v2.npy').transpose((0,1,3,4,2))
     print(train_dataset.shape)
     y_dataset = train_dataset[:,:,:,:,5]>0
