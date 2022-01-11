@@ -86,7 +86,7 @@ if __name__=='__main__':
             model = get_convlstm_unet((1,224,224,5))
         model.summary()
 
-        optimizer = tfa.optimizers.AdamW(
+        optimizer = tf.optimizers.Adam(
             learning_rate=learning_rate, weight_decay=weight_decay
         )
 
