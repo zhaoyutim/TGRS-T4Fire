@@ -1,7 +1,7 @@
-from tensorflow.python.keras import Input
-from tensorflow.python.keras.layers import TimeDistributed, MaxPooling2D, ConvLSTM2D, UpSampling2D, \
+from tensorflow.keras import Input
+from tensorflow.keras.layers import TimeDistributed, MaxPooling2D, ConvLSTM2D, UpSampling2D, \
     Convolution2D, Concatenate, Conv2D, Dropout
-from tensorflow.python.keras.models import Model
+from tensorflow.keras.models import Model
 import tensorflow as tf
 
 
