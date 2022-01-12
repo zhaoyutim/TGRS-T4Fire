@@ -73,8 +73,8 @@ if __name__=='__main__':
     sm.set_framework('tf.keras')
     batch_size=args.b
     MAX_EPOCHS=100
-    learning_rate = 0.0001
-    weight_decay = 0.00001
+    learning_rate = 0.00001
+    weight_decay = 0.000001
 
     train_dataset, val_dataset, steps_per_epoch, validation_steps = get_dateset(batch_size)
 
