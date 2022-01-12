@@ -60,15 +60,15 @@ def get_convlstm_unet1(input_shape):
 def get_convlstm_unet2(input_shape):
     inputs = Input(input_shape)
     conv1 = ConvLSTM2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True)(inputs)
-    conv1 = TimeDistributed(Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv1)
+    # conv1 = TimeDistributed(Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv1)
     pool1 = TimeDistributed(MaxPooling2D(pool_size=(2, 2)))(conv1)
 
     conv2 = ConvLSTM2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True)(pool1)
-    conv2 = TimeDistributed(Conv2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv2)
+    # conv2 = ConvLSTM2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True)(conv2)
     pool2 = TimeDistributed(MaxPooling2D(pool_size=(2, 2)))(conv2)
 
     conv3 = ConvLSTM2D(256, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True)(pool2)
-    conv3 = TimeDistributed(Conv2D(256, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(conv3)
+    # conv3 = ConvLSTM2D(256, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal', return_sequences=True)(conv3)
     pool3 = TimeDistributed(MaxPooling2D(pool_size=(2, 2)))(conv3)
 
     conv4 = TimeDistributed(Conv2D(512, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal'))(pool3)
