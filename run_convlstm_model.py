@@ -10,7 +10,7 @@ from wandb.integration.keras import WandbCallback
 from segmentation_models.metrics import iou_score, f1_score
 from segmentation_models import Unet, Linknet, PSPNet, FPN
 from keras_unet_collection import models
-from model.convlstm_models.convlstm_models import get_convlstm_unet, unet
+from model.convlstm_models.convlstm_models import get_convlstm_unet2, unet
 
 
 def get_dateset(batch_size):
@@ -83,7 +83,7 @@ if __name__=='__main__':
     # strategy = tf.distribute.MirroredStrategy()
     # with strategy.scope():
     if model_name == 'convlstm_unet':
-        model = get_convlstm_unet((10,224,224,5))
+        model = get_convlstm_unet2((10,224,224,5))
     model.summary()
 
     optimizer = tfa.optimizers.AdamW(
