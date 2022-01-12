@@ -65,8 +65,8 @@ if __name__=='__main__':
 
     batch_size=args.b
     MAX_EPOCHS = 50
-    learning_rate = 0.001
-    weight_decay = 0.0001
+    learning_rate = 0.00001
+    weight_decay = 0.000001
 
     num_classes=2
     input_shape=(10,pow(window_size,2)*5)
@@ -97,7 +97,7 @@ if __name__=='__main__':
             )
         elif model_name == 'gru20':
             gru = GRUModel(input_shape, num_classes)
-            model = gru.get_model_10_layers(input_shape, num_classes)
+            model = gru.get_model(input_shape, num_classes)
         elif model_name=='vit_base':
             model = vit.vit_base(
                 input_shape=input_shape,
