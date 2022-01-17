@@ -1,10 +1,8 @@
-import datetime
-
-import numpy as np
-from sklearn.model_selection import train_test_split
-
-import tensorflow as tf
 import keras.backend as K
+import tensorflow as tf
+from tensorflow.keras.layers import Bidirectional
+
+
 class GRUModel:
     def __init__(self, input_shape, num_classes):
         self.input_shape = input_shape
@@ -77,6 +75,32 @@ class GRUModel:
             tf.keras.layers.GRU(64, dropout=0.2,return_sequences=True),
             tf.keras.layers.GRU(32, dropout=0.2,return_sequences=True),
             tf.keras.layers.GRU(32, dropout=0.2,return_sequences=True),
+            tf.keras.layers.Dense(num_class, activation='sigmoid')
+        ])
+        return gru_model
+
+    def get_model_bi(self, input_shape, num_class):
+        gru_model = tf.keras.models.Sequential([
+            Bidirectional(tf.keras.layers.GRU(512, input_shape=input_shape, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(512, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(512, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(512, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(256, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(256, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(256, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(256, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(128, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(128, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(128, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(128, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(64, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(64, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(64, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(64, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(32, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(32, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(16, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.GRU(16, dropout=0.1, return_sequences=True)),
             tf.keras.layers.Dense(num_class, activation='sigmoid')
         ])
         return gru_model

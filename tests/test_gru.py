@@ -2,7 +2,7 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-from model.gru.gru_model import GRUModel
+from model.lstm.lstm_model import GRUModel
 
 if __name__ == '__main__':
     MAX_EPOCHS = 100

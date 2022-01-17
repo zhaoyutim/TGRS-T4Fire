@@ -7,7 +7,8 @@ import wandb
 from sklearn.model_selection import train_test_split
 from wandb.integration.keras import WandbCallback
 
-from model.gru.gru_model import GRUModel
+from model.gru.gru_model import LSTMModel
+from model.lstm.lstm_model import GRUModel
 from model.vit_keras import vit
 def get_dateset(window_size, batch_size):
     x_dataset = np.load('/geoinfo_vol1/zhao2/proj3_train_v2_w'+str(window_size)+'.npy')
@@ -50,6 +51,7 @@ def wandb_config(window_size, model_name):
     #   "num_heads":num_heads,
     #   "transformer_layers": transformer_layers
     # }
+
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -98,6 +100,15 @@ if __name__=='__main__':
         elif model_name == 'gru20':
             gru = GRUModel(input_shape, num_classes)
             model = gru.get_model(input_shape, num_classes)
+        elif model_name == 'gru20_bi':
+            gru = GRUModel(input_shape, num_classes)
+            model = gru.get_model_bi(input_shape, num_classes)
+        elif model_name == 'lstm20':
+            lstm = LSTMModel(input_shape, num_classes)
+            model = lstm.get_model(input_shape, num_classes)
+        elif model_name == 'lstm20_bi':
+            lstm = LSTMModel(input_shape, num_classes)
+            model = lstm.get_model_bi(input_shape, num_classes)
         elif model_name=='vit_base':
             model = vit.vit_base(
                 input_shape=input_shape,
