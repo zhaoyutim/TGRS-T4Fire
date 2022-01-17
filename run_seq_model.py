@@ -7,8 +7,8 @@ import wandb
 from sklearn.model_selection import train_test_split
 from wandb.integration.keras import WandbCallback
 
-from model.gru.gru_model import LSTMModel
-from model.lstm.lstm_model import GRUModel
+from model.lstm.lstm_model import LSTMModel
+from model.gru.gru_model import GRUModel
 from model.vit_keras import vit
 def get_dateset(window_size, batch_size):
     x_dataset = np.load('/geoinfo_vol1/zhao2/proj3_train_v2_w'+str(window_size)+'.npy')
