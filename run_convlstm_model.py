@@ -1,16 +1,15 @@
 import argparse
 
 import numpy as np
+import segmentation_models as sm
 import tensorflow as tf
 import tensorflow_addons as tfa
 import wandb
-from sklearn.model_selection import train_test_split
-import segmentation_models as sm
-from wandb.integration.keras import WandbCallback
 from segmentation_models.metrics import iou_score, f1_score
-from segmentation_models import Unet, Linknet, PSPNet, FPN
-from keras_unet_collection import models
-from model.convlstm_models.convlstm_models import get_convlstm_unet2, unet
+from sklearn.model_selection import train_test_split
+from wandb.integration.keras import WandbCallback
+
+from model.convlstm_models.convlstm_models import get_convlstm_unet2, get_convlstm_unet1
 
 
 def get_dateset(batch_size):
@@ -82,8 +81,10 @@ if __name__=='__main__':
 
     # strategy = tf.distribute.MirroredStrategy()
     # with strategy.scope():
-    if model_name == 'convlstm_unet':
+    if model_name == 'convlstm_unet_downsample':
         model = get_convlstm_unet2((10,224,224,5))
+    elif model_name == 'convlstm_unet_concat':
+        model = get_convlstm_unet1((10,224,224,5))
     model.summary()
 
     optimizer = tfa.optimizers.AdamW(
