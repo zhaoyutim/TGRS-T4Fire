@@ -40,9 +40,9 @@ def get_dateset(window_size, batch_size):
     return train_dataset, val_dataset, steps_per_epoch, validation_steps
 
 
-def wandb_config(window_size, model_name):
+def wandb_config(window_size, model_name, run):
     wandb.login()
-    wandb.init(project="tokenized_window_size"+ str(window_size) +str(model_name), entity="zhaoyutim")
+    wandb.init(project="tokenized_window_size" + str(window_size) + str(model_name) + 'run' + str(run), entity="zhaoyutim")
     # wandb.config = {
     #   "learning_rate": learning_rate,
     #   "weight_decay": weight_decay,
@@ -59,11 +59,13 @@ if __name__=='__main__':
     parser.add_argument('-w', type=int, help='Window size')
     parser.add_argument('-p', type=str, help='Load trained weights')
     parser.add_argument('-b', type=int, help='batch size')
+    parser.add_argument('-r', type=int, help='run')
 
     args = parser.parse_args()
     model_name = args.m
     load_weights = args.p
     window_size = args.w
+    run = args.r
 
     batch_size=args.b
     MAX_EPOCHS = 50
@@ -75,7 +77,7 @@ if __name__=='__main__':
 
     train_dataset, val_dataset, steps_per_epoch, validation_steps = get_dateset(window_size, batch_size)
 
-    wandb_config(window_size, model_name)
+    wandb_config(window_size, model_name, run)
 
     strategy = tf.distribute.MirroredStrategy()
     with strategy.scope():

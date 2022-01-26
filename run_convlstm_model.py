@@ -48,7 +48,7 @@ def dice_coef(y_true, y_pred):
 
 def wandb_config(model_name, backbone):
     wandb.login()
-    wandb.init(project=str(model_name)+'_'+str(backbone), entity="zhaoyutim")
+    wandb.init(project=str(model_name)+'_'+str(backbone)+'run'+str(run), entity="zhaoyutim")
     # wandb.config = {
     #   "learning_rate": learning_rate,
     #   "weight_decay": weight_decay,
@@ -64,6 +64,7 @@ if __name__=='__main__':
     parser.add_argument('-p', type=str, help='Load trained weights')
     parser.add_argument('-b', type=int, help='batch size')
     parser.add_argument('-bb', type=str, help='backbone')
+    parser.add_argument('-r', type=int, help='run')
 
     args = parser.parse_args()
     model_name = args.m
@@ -71,13 +72,14 @@ if __name__=='__main__':
     backbone = args.bb
     sm.set_framework('tf.keras')
     batch_size=args.b
+    run = args.r
     MAX_EPOCHS=100
     learning_rate = 0.00001
     weight_decay = 0.000001
 
     train_dataset, val_dataset, steps_per_epoch, validation_steps = get_dateset(batch_size)
 
-    wandb_config(model_name, backbone)
+    wandb_config(model_name, backbone, run)
 
     # strategy = tf.distribute.MirroredStrategy()
     # with strategy.scope():
