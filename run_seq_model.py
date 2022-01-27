@@ -143,7 +143,7 @@ if __name__=='__main__':
     val_dataset = val_dataset.with_options(options)
 
     if load_weights== 'yes':
-        model.load_weights('/geoinfo_vol1/zhao2/proj3_' + model_name + 'w' + str(window_size) + '_nopretrained')
+        model.load_weights('/geoinfo_vol1/zhao2/proj3_' + model_name + 'w' + str(window_size) + '_nopretrained'+'run'+str(run))
     else:
         print('training in progress')
         history = model.fit(
@@ -155,4 +155,4 @@ if __name__=='__main__':
             epochs=MAX_EPOCHS,
             callbacks=[WandbCallback()],
         )
-        model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained')
+        model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'run'+str(run))

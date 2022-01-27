@@ -584,7 +584,7 @@ class SwinTransformerBlock(tf.keras.layers.Layer):
         # Convert to aligned patches
         x = tf.reshape(x, shape=(-1, H, W, C))
 
-        # Cyclic shift
+        # Cyclic shift shift x instead of the window
         if self.shift_size > 0:
             shifted_x = tf.roll(x, shift=[-self.shift_size, -self.shift_size], axis=[1, 2])
         else:
@@ -615,7 +615,7 @@ class SwinTransformerBlock(tf.keras.layers.Layer):
         x = self.drop_path(x)
         
         # Skip connection I (end)
-        x = x_skip +  x
+        x = x_skip + x
         
         # Skip connection II (start)
         x_skip = x
