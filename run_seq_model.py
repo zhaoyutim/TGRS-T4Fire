@@ -65,9 +65,10 @@ if __name__=='__main__':
     model_name = args.m
     load_weights = args.p
     window_size = args.w
-    run = args.r
-
     batch_size=args.b
+    run = args.r
+    print(run)
+
     MAX_EPOCHS = 50
     learning_rate = 0.00001
     weight_decay = 0.000001
@@ -143,7 +144,7 @@ if __name__=='__main__':
     val_dataset = val_dataset.with_options(options)
 
     if load_weights== 'yes':
-        model.load_weights('/geoinfo_vol1/zhao2/proj3_' + model_name + 'w' + str(window_size) + '_nopretrained'+'run'+str(run))
+        model.load_weights('/geoinfo_vol1/zhao2/proj3_' + model_name + 'w' + str(window_size) + '_nopretrained'+'_run'+str(run))
     else:
         print('training in progress')
         history = model.fit(
@@ -155,4 +156,4 @@ if __name__=='__main__':
             epochs=MAX_EPOCHS,
             callbacks=[WandbCallback()],
         )
-        model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'run'+str(run))
+        model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run))
