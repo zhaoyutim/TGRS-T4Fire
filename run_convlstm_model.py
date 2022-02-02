@@ -46,7 +46,7 @@ def dice_coef(y_true, y_pred):
     smooth = 1.0
     return 1-(2.0*intersection+smooth)/(tf.math.reduce_sum(y_true_f)+tf.math.reduce_sum(y_pred_f)+smooth)
 
-def wandb_config(model_name, backbone):
+def wandb_config(model_name, backbone, run):
     wandb.login()
     wandb.init(project=str(model_name)+'_'+str(backbone)+'run'+str(run), entity="zhaoyutim")
     # wandb.config = {
