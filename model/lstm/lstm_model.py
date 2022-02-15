@@ -67,14 +67,9 @@ class LSTMModel:
         lstm_model = tf.keras.models.Sequential([
             tf.keras.layers.LSTM(512, input_shape=input_shape, return_sequences=True),
             tf.keras.layers.LSTM(512, dropout=0.2, return_sequences=True),
-            tf.keras.layers.LSTM(256, dropout=0.2, return_sequences=True),
-            tf.keras.layers.LSTM(256, dropout=0.2, return_sequences=True),
-            tf.keras.layers.LSTM(128, dropout=0.2, return_sequences=True),
-            tf.keras.layers.LSTM(128, dropout=0.2, return_sequences=True),
-            tf.keras.layers.LSTM(64, dropout=0.2,return_sequences=True),
-            tf.keras.layers.LSTM(64, dropout=0.2,return_sequences=True),
-            tf.keras.layers.LSTM(32, dropout=0.2,return_sequences=True),
-            tf.keras.layers.LSTM(32, dropout=0.2,return_sequences=True),
+            tf.keras.layers.LSTM(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.LSTM(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.LSTM(512, dropout=0.2, return_sequences=True),
             tf.keras.layers.Dense(num_class, activation='sigmoid')
         ])
         return lstm_model
@@ -85,22 +80,7 @@ class LSTMModel:
             Bidirectional(tf.keras.layers.LSTM(512, dropout=0.1, return_sequences=True)),
             Bidirectional(tf.keras.layers.LSTM(512, dropout=0.1, return_sequences=True)),
             Bidirectional(tf.keras.layers.LSTM(512, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(256, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(256, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(256, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(256, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(128, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(128, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(128, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(128, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(64, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(64, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(64, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(64, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(32, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(32, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(16, dropout=0.1, return_sequences=True)),
-            Bidirectional(tf.keras.layers.LSTM(16, dropout=0.1, return_sequences=True)),
+            Bidirectional(tf.keras.layers.LSTM(512, dropout=0.1, return_sequences=True)),
             tf.keras.layers.Dense(num_class, activation='sigmoid')
         ])
         return lstm_model
