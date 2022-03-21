@@ -100,16 +100,16 @@ if __name__=='__main__':
                 include_top=True,
                 pretrained_top=True
             )
-        elif model_name == 'gru20':
+        elif model_name == 'gru5':
             gru = GRUModel(input_shape, num_classes)
             model = gru.get_model_5_layers(input_shape, num_classes)
-        elif model_name == 'gru20_bi':
+        elif model_name == 'gru5_bi':
             gru = GRUModel(input_shape, num_classes)
             model = gru.get_model_bi(input_shape, num_classes)
-        elif model_name == 'lstm20':
+        elif model_name == 'lstm5':
             lstm = LSTMModel(input_shape, num_classes)
             model = lstm.get_model_5_layers(input_shape, num_classes)
-        elif model_name == 'lstm20_bi':
+        elif model_name == 'lstm5_bi':
             lstm = LSTMModel(input_shape, num_classes)
             model = lstm.get_model_bi(input_shape, num_classes)
         elif model_name=='vit_base':
