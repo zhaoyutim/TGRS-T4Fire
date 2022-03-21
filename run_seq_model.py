@@ -108,7 +108,7 @@ if __name__=='__main__':
             model = gru.get_model_bi(input_shape, num_classes)
         elif model_name == 'lstm20':
             lstm = LSTMModel(input_shape, num_classes)
-            model = lstm.get_model_10_layers(input_shape, num_classes)
+            model = lstm.get_model_5_layers(input_shape, num_classes)
         elif model_name == 'lstm20_bi':
             lstm = LSTMModel(input_shape, num_classes)
             model = lstm.get_model_bi(input_shape, num_classes)

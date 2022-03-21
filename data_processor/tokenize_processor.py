@@ -16,7 +16,7 @@ class TokenizeProcessor:
             for i in range(padding, shape-padding):
                 for j in range(padding, shape-padding):
                     output_array[num_sample, i-padding, j-padding, :, :] = self.flatten_window(padded_array[num_sample, i-padding:i+padding+1, j-padding:j+padding+1, :, :], window_size)
-        print(output_array.shape)
+        # print(output_array.shape)
         return output_array
 
     def tokenizing_patch_segment(self, window_size):
@@ -46,7 +46,7 @@ class TokenizeProcessor:
             # plt.show()
         output_array = np.stack(output_array, axis=0)
         label_array = np.stack(label_array, axis=0)
-        print(output_array.shape)
+        # print(output_array.shape)
         return output_array, label_array
 
     def flatten_window_patch_seg(self, array, window_size):
@@ -58,7 +58,7 @@ class TokenizeProcessor:
         return output_array, label
 
     def flatten_window(self, array, window_size):
-        print(array.shape)
+        # print(array.shape)
         output_array = np.zeros((array.shape[2], (array.shape[3]-2)*pow(window_size,2)+2))
         for time in range(array.shape[2]):
             output_array[time, :output_array.shape[1]-2] = array[:, :, time, :5].flatten('F')
@@ -69,11 +69,13 @@ class TokenizeProcessor:
 
 
 if __name__=='__main__':
-    window_size = 1
-    tokenize_processor = TokenizeProcessor('../data/proj3_lytton_fire_img.npy')
-    tokenized_array = tokenize_processor.tokenizing(window_size)
-    np.nan_to_num(tokenized_array)
-    np.save('../data/proj3_lytton_fire_w'+str(window_size)+'.npy', tokenized_array.reshape(-1,10,pow(window_size,2)*5+2))
+    window_size = 5
+    locations= ['swedish_fire']
+    for location in locations:
+        tokenize_processor = TokenizeProcessor('../data/proj3_'+location+'_img.npy')
+        tokenized_array = tokenize_processor.tokenizing(window_size)
+        np.nan_to_num(tokenized_array)
+        np.save('../data/proj3_'+location+'_w'+str(window_size)+'.npy', tokenized_array.reshape(-1,10,pow(window_size,2)*5+2))
     # np.save('../data/proj3_test_w' + str(window_size) + 'patch_seg.npy',
     #         tokenized_array)
     # np.save('../data/proj3_test_w' + str(window_size) + 'label.npy',

@@ -10,7 +10,7 @@ class LSTMModel:
         self.num_classes = num_classes
         # self.projection_dims=projection_dims
         self.model = self.get_model(input_shape, num_classes)
-        self.model_10_layers = self.get_model_10_layers(input_shape, num_classes)
+        self.model_10_layers = self.get_model_5_layers(input_shape, num_classes)
 
     def recall_m(self, y_true, y_pred):
         true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
@@ -63,7 +63,7 @@ class LSTMModel:
         ])
         return lstm_model
 
-    def get_model_10_layers(self, input_shape, num_class):
+    def get_model_5_layers(self, input_shape, num_class):
         lstm_model = tf.keras.models.Sequential([
             tf.keras.layers.LSTM(512, input_shape=input_shape, return_sequences=True),
             tf.keras.layers.LSTM(512, dropout=0.2, return_sequences=True),
