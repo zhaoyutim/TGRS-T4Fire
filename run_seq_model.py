@@ -12,11 +12,12 @@ from model.gru.gru_model import GRUModel
 from model.vit_keras import vit
 def get_dateset(window_size, batch_size):
     x_dataset = np.load('/geoinfo_vol1/zhao2/proj3_train_v2_w'+str(window_size)+'.npy')
+    x_dataset = x_dataset[:,::-1,:]
     y_dataset = np.zeros((x_dataset.shape[0],x_dataset.shape[1],2))
     y_dataset[: ,:, 0] = x_dataset[:, :, pow(window_size,2)*5] == 0
     y_dataset[:, :, 1] = x_dataset[:, :, pow(window_size,2)*5] > 0
 
-    x_train, x_val, y_train, y_val = train_test_split(x_dataset[:,:,:pow(window_size,2)*5], y_dataset, test_size=0.2)
+    x_train, x_val, y_train, y_val = train_test_split(x_dataset[:,:,:pow(window_size,2)*5], y_dataset, test_size=0.2, random_state=0)
 
     def make_generator(inputs, labels):
         def _generator():
