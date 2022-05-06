@@ -62,7 +62,36 @@ class GRUModel:
             tf.keras.layers.Dense(num_class, activation='sigmoid')
         ])
         return gru_model
-
+    def get_model_2_layers(self, input_shape, num_class):
+        gru_model = tf.keras.models.Sequential([
+            tf.keras.layers.GRU(512, input_shape=input_shape, return_sequences=True),
+            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.Dense(num_class, activation='sigmoid')
+        ])
+        return gru_model
+    def get_model_3_layers(self, input_shape, num_class):
+        gru_model = tf.keras.models.Sequential([
+            tf.keras.layers.GRU(512, input_shape=input_shape, return_sequences=True),
+            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.Dense(num_class, activation='sigmoid')
+        ])
+        return gru_model
+    def get_model_4_layers(self, input_shape, num_class):
+        gru_model = tf.keras.models.Sequential([
+            tf.keras.layers.GRU(512, input_shape=input_shape, return_sequences=True),
+            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
+            tf.keras.layers.Dense(num_class, activation='sigmoid')
+        ])
+        return gru_model
     def get_model_5_layers(self, input_shape, num_class):
         gru_model = tf.keras.models.Sequential([
             tf.keras.layers.GRU(512, input_shape=input_shape, return_sequences=True),

@@ -104,6 +104,17 @@ if __name__=='__main__':
         elif model_name == 'gru5':
             gru = GRUModel(input_shape, num_classes)
             model = gru.get_model_5_layers(input_shape, num_classes)
+
+        elif model_name == 'gru2':
+            gru = GRUModel(input_shape, num_classes)
+            model = gru.get_model_2_layers(input_shape, num_classes)
+        elif model_name == 'gru3':
+            gru = GRUModel(input_shape, num_classes)
+            model = gru.get_model_3_layers(input_shape, num_classes)
+        elif model_name == 'gru4':
+            gru = GRUModel(input_shape, num_classes)
+            model = gru.get_model_4_layers(input_shape, num_classes)
+
         elif model_name == 'gru5_bi':
             gru = GRUModel(input_shape, num_classes)
             model = gru.get_model_bi(input_shape, num_classes)

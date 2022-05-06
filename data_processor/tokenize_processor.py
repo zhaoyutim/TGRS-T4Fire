@@ -70,7 +70,7 @@ class TokenizeProcessor:
 
 if __name__=='__main__':
     window_size = 5
-    locations= ['swedish_fire']
+    locations= ['walker_fire']
     for location in locations:
         tokenize_processor = TokenizeProcessor('../data/proj3_'+location+'_img.npy')
         tokenized_array = tokenize_processor.tokenizing(window_size)
