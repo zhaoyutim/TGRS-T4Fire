@@ -101,6 +101,15 @@ if __name__=='__main__':
                 include_top=True,
                 pretrained_top=True
             )
+        elif model_name=='vit_tiny_6':
+            model = vit.vit_tiny_6(
+                input_shape=input_shape,
+                classes=num_classes,
+                activation='sigmoid',
+                pretrained=True,
+                include_top=True,
+                pretrained_top=True
+            )
         elif model_name == 'gru5':
             gru = GRUModel(input_shape, num_classes)
             model = gru.get_model_5_layers(input_shape, num_classes)
