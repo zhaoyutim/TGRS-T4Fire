@@ -32,6 +32,14 @@ CONFIG_Ti_6: ConfigDict = {
     "hidden_size": 192,
 }
 
+CONFIG_Ti_9: ConfigDict = {
+    "dropout": 0.1,
+    "mlp_dim": 768,
+    "num_heads": 3,
+    "num_layers": 9,
+    "hidden_size": 192,
+}
+
 CONFIG_S: ConfigDict = {
     "dropout": 0.1,
     "mlp_dim": 1664,
@@ -226,16 +234,26 @@ def vit_tiny_6(
         include_top=include_top,
         representation_size=768 if weights == "imagenet21k" else None,
     )
+    return model
 
-    # if pretrained:
-    #     load_pretrained(
-    #         size="B_16",
-    #         weights=weights,
-    #         model=model,
-    #         pretrained_top=pretrained_top,
-    #         image_size=input_shape,
-    #         patch_size=16,
-    #     )
+def vit_tiny_9(
+        input_shape = (10,45),
+        classes=2,
+        activation="linear",
+        include_top=True,
+        pretrained=True,
+        pretrained_top=True,
+        weights="imagenet21k+imagenet2012",
+):
+    model = build_model(
+        **CONFIG_Ti_9,
+        name="vit-ti_9",
+        input_shape=input_shape,
+        classes=classes,
+        activation=activation,
+        include_top=include_top,
+        representation_size=768 if weights == "imagenet21k" else None,
+    )
     return model
 
 def vit_small(

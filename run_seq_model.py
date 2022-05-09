@@ -110,6 +110,15 @@ if __name__=='__main__':
                 include_top=True,
                 pretrained_top=True
             )
+        elif model_name=='vit_tiny_9':
+            model = vit.vit_tiny_9(
+                input_shape=input_shape,
+                classes=num_classes,
+                activation='sigmoid',
+                pretrained=True,
+                include_top=True,
+                pretrained_top=True
+            )
         elif model_name == 'gru5':
             gru = GRUModel(input_shape, num_classes)
             model = gru.get_model_5_layers(input_shape, num_classes)
@@ -130,6 +139,16 @@ if __name__=='__main__':
         elif model_name == 'lstm5':
             lstm = LSTMModel(input_shape, num_classes)
             model = lstm.get_model_5_layers(input_shape, num_classes)
+        elif model_name == 'lstm2':
+            lstm = LSTMModel(input_shape, num_classes)
+            model = lstm.get_model_2_layers(input_shape, num_classes)
+        elif model_name == 'lstm3':
+            lstm = LSTMModel(input_shape, num_classes)
+            model = lstm.get_model_3_layers(input_shape, num_classes)
+        elif model_name == 'lstm4':
+            lstm = LSTMModel(input_shape, num_classes)
+            model = lstm.get_model_4_layers(input_shape, num_classes)
+
         elif model_name == 'lstm5_bi':
             lstm = LSTMModel(input_shape, num_classes)
             model = lstm.get_model_bi(input_shape, num_classes)
