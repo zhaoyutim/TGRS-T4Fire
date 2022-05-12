@@ -39,6 +39,13 @@ CONFIG_Ti_6_2: ConfigDict = {
     "num_layers": 6,
     "hidden_size": 256,
 }
+CONFIG_Ti_6_3: ConfigDict = {
+    "dropout": 0.1,
+    "mlp_dim": 2048,
+    "num_heads": 8,
+    "num_layers": 6,
+    "hidden_size": 256,
+}
 
 CONFIG_S: ConfigDict = {
     "dropout": 0.1,
@@ -255,7 +262,25 @@ def vit_tiny_6_2(
         representation_size=768 if weights == "imagenet21k" else None,
     )
     return model
-
+def vit_tiny_6_3(
+        input_shape = (10,45),
+        classes=2,
+        activation="linear",
+        include_top=True,
+        pretrained=True,
+        pretrained_top=True,
+        weights="imagenet21k+imagenet2012",
+):
+    model = build_model(
+        **CONFIG_Ti_6_3,
+        name="vit-ti_6_3",
+        input_shape=input_shape,
+        classes=classes,
+        activation=activation,
+        include_top=include_top,
+        representation_size=768 if weights == "imagenet21k" else None,
+    )
+    return model
 def vit_small(
     input_shape = (10,45),
     classes=2,
