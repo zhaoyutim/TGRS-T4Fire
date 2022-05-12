@@ -110,8 +110,8 @@ if __name__=='__main__':
                 include_top=True,
                 pretrained_top=True
             )
-        elif model_name=='vit_tiny_9':
-            model = vit.vit_tiny_9(
+        elif model_name=='vit_tiny_6_2':
+            model = vit.vit_tiny_6_2(
                 input_shape=input_shape,
                 classes=num_classes,
                 activation='sigmoid',
