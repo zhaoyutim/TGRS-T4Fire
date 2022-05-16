@@ -79,7 +79,7 @@ if __name__=='__main__':
 
     train_dataset, val_dataset, steps_per_epoch, validation_steps = get_dateset(window_size, batch_size)
 
-    wandb_config(window_size, model_name, run)
+    # wandb_config(window_size, model_name, run)
 
     strategy = tf.distribute.MirroredStrategy()
     with strategy.scope():
