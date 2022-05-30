@@ -64,6 +64,10 @@ if __name__=='__main__':
         stack_hue = deepcopy(array[0, :, :])
         stack_hue[stack_hue==0]=np.nan
         dir = []
+        plt.imshow(stack,cmap='Reds')
+        plt.axis('off')
+        plt.savefig('../plt/'+fire+'stack'+str(0)+'.png', bbox_inches='tight')
+
         for i in range(1, 10):
             fire_t = array[i, :, :]
             # Calculate centroid of the fire
@@ -75,6 +79,7 @@ if __name__=='__main__':
                 vectors = get_direction_vector(x, y, fire_t)
             else:
                 vectors = [[0, 0]]
+
             # Visualization
             plt.figure(figsize=(20, 4))
             plt.subplot(151)
@@ -132,4 +137,8 @@ if __name__=='__main__':
             stack = np.logical_or(stack, fire_t)
             stack_hue[fire_t!=0]=i+1
             stack_hue[stack_hue==0]=np.nan
-        print('Cosine Similarity of fire ' + fire+ ' {}'.format(evaluate(dir)))
+            plt.imshow(stack,cmap='Reds')
+            plt.axis('off')
+            plt.savefig('../plt/'+fire+'stack'+str(i)+'.png', bbox_inches='tight')
+
+    print('Cosine Similarity of fire ' + fire+ ' {}'.format(evaluate(dir)))
