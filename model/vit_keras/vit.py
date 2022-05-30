@@ -28,23 +28,29 @@ CONFIG_Ti_12_2: ConfigDict = {
     "mlp_dim": 768,
     "num_heads": 3,
     "num_layers": 12,
-    "hidden_size": 256,
+    "hidden_size": 384,
 }
 CONFIG_Ti_12_3: ConfigDict = {
     "dropout": 0.1,
     "mlp_dim": 768,
     "num_heads": 3,
     "num_layers": 12,
-    "hidden_size": 320,
+    "hidden_size": 768,
 }
-CONFIG_Ti_12_4: ConfigDict = {
+CONFIG_Ti_12_1024: ConfigDict = {
     "dropout": 0.1,
-    "mlp_dim": 768,
+    "mlp_dim": 1024,
     "num_heads": 3,
     "num_layers": 12,
-    "hidden_size": 512,
+    "hidden_size": 192,
 }
-
+CONFIG_Ti_12_2048: ConfigDict = {
+    "dropout": 0.1,
+    "mlp_dim": 2048,
+    "num_heads": 3,
+    "num_layers": 12,
+    "hidden_size": 192,
+}
 CONFIG_Ti_3: ConfigDict = {
     "dropout": 0.1,
     "mlp_dim": 768,
@@ -290,7 +296,7 @@ def vit_tiny_12_3(
     )
     return model
 
-def vit_tiny_12_4(
+def vit_tiny_12_1024(
         input_shape = (10,45),
         classes=2,
         activation="linear",
@@ -300,7 +306,7 @@ def vit_tiny_12_4(
         weights="imagenet21k+imagenet2012",
 ):
     model = build_model(
-        **CONFIG_Ti_12_4,
+        **CONFIG_Ti_12_1024,
         name="vit-ti",
         input_shape=input_shape,
         classes=classes,
@@ -309,7 +315,25 @@ def vit_tiny_12_4(
         representation_size=768 if weights == "imagenet21k" else None,
     )
     return model
-
+def vit_tiny_12_2048(
+        input_shape = (10,45),
+        classes=2,
+        activation="linear",
+        include_top=True,
+        pretrained=True,
+        pretrained_top=True,
+        weights="imagenet21k+imagenet2012",
+):
+    model = build_model(
+        **CONFIG_Ti_12_2048,
+        name="vit-ti",
+        input_shape=input_shape,
+        classes=classes,
+        activation=activation,
+        include_top=include_top,
+        representation_size=768 if weights == "imagenet21k" else None,
+    )
+    return model
 def vit_tiny_3(
         input_shape = (10,45),
         classes=2,
