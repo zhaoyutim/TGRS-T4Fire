@@ -64,7 +64,7 @@ if __name__=='__main__':
     parser.add_argument('-p', type=str, help='Load trained weights')
     parser.add_argument('-b', type=int, help='batch size')
     parser.add_argument('-r', type=int, help='run')
-    parser.add_argument('-lr', type=int, help='learning rate')
+    parser.add_argument('-lr', type=float, help='learning rate')
 
     parser.add_argument('-nh', type=str, help='number-of-head')
     parser.add_argument('-md', type=int, help='mlp-dimension')
