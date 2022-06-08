@@ -296,4 +296,7 @@ if __name__=='__main__':
             epochs=MAX_EPOCHS,
             callbacks=[WandbCallback()],
         )
-        model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run))
+        if model_name != 'vit_tiny_custom':
+            model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run))
+        else:
+            model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run).join('_'+num_heads).join('_'+mlp_dim).join('_'+hidden_size).join('_'+num_layers))
