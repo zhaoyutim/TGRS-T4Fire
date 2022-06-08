@@ -66,7 +66,7 @@ if __name__=='__main__':
     parser.add_argument('-r', type=int, help='run')
     parser.add_argument('-lr', type=float, help='learning rate')
 
-    parser.add_argument('-nh', type=str, help='number-of-head')
+    parser.add_argument('-nh', type=int, help='number-of-head')
     parser.add_argument('-md', type=int, help='mlp-dimension')
     parser.add_argument('-ed', type=int, help='embedding dimension')
     parser.add_argument('-nl', type=int, help='num_layers')
