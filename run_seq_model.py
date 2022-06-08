@@ -41,17 +41,20 @@ def get_dateset(window_size, batch_size):
     return train_dataset, val_dataset, steps_per_epoch, validation_steps
 
 
-def wandb_config(window_size, model_name, run):
+def wandb_config(window_size, model_name, run, num_heads, num_layers, mlp_dim, hidden_size):
     wandb.login()
-    wandb.init(project="tokenized_window_size" + str(window_size) + str(model_name) + 'run' + str(run), entity="zhaoyutim")
-    # wandb.config = {
-    #   "learning_rate": learning_rate,
-    #   "weight_decay": weight_decay,
-    #   "epochs": MAX_EPOCHS,
-    #   "batch_size": batch_size,
-    #   "num_heads":num_heads,
-    #   "transformer_layers": transformer_layers
-    # }
+    # wandb.init(project="tokenized_window_size" + str(window_size) + str(model_name) + 'run' + str(run), entity="zhaoyutim")
+    wandb.init(project="proj3_vit_tiny_grid_search", entity="zhaoyutim")
+    wandb.config = {
+        "learning_rate": learning_rate,
+        "weight_decay": weight_decay,
+        "epochs": MAX_EPOCHS,
+        "batch_size": batch_size,
+        "num_heads": num_heads,
+        "num_layers": num_layers,
+        "mlp_dim": mlp_dim,
+        "embed_dim": hidden_size
+    }
 
 
 if __name__=='__main__':
@@ -61,6 +64,12 @@ if __name__=='__main__':
     parser.add_argument('-p', type=str, help='Load trained weights')
     parser.add_argument('-b', type=int, help='batch size')
     parser.add_argument('-r', type=int, help='run')
+    parser.add_argument('-lr', type=int, help='learning rate')
+
+    parser.add_argument('-nh', type=str, help='number-of-head')
+    parser.add_argument('-md', type=int, help='mlp-dimension')
+    parser.add_argument('-ed', type=int, help='embedding dimension')
+    parser.add_argument('-nl', type=int, help='num_layers')
 
     args = parser.parse_args()
     model_name = args.m
@@ -68,18 +77,24 @@ if __name__=='__main__':
     window_size = args.w
     batch_size=args.b
     run = args.r
-    print(run)
+    lr = args.lr
 
     MAX_EPOCHS = 50
-    learning_rate = 0.001
-    weight_decay = 0.0001
+    # lr=0.001 epochs=50 batch_size=256
+    learning_rate = lr
+    weight_decay = lr / 10
 
     num_classes=2
     input_shape=(10,pow(window_size,2)*5)
 
     train_dataset, val_dataset, steps_per_epoch, validation_steps = get_dateset(window_size, batch_size)
 
-    # wandb_config(window_size, model_name, run)
+    num_heads=args.nh
+    mlp_dim=args.md
+    num_layers=args.nl
+    hidden_size=args.ed
+
+    wandb_config(window_size, model_name, run, num_heads, mlp_dim, num_layers, hidden_size)
 
     strategy = tf.distribute.MirroredStrategy()
     with strategy.scope():
@@ -100,6 +115,19 @@ if __name__=='__main__':
                 pretrained=True,
                 include_top=True,
                 pretrained_top=True
+            )
+        elif model_name=='vit_tiny_custom':
+            model = vit.vit_tiny_custom(
+                input_shape=input_shape,
+                classes=num_classes,
+                activation='sigmoid',
+                pretrained=True,
+                include_top=True,
+                pretrained_top=True,
+                num_heads=num_heads,
+                mlp_dim=mlp_dim,
+                num_layers=num_layers,
+                hidden_size=hidden_size
             )
         elif model_name=='vit_tiny_12_2':
             model = vit.vit_tiny_12_2(
@@ -266,6 +294,6 @@ if __name__=='__main__':
             validation_data=val_dataset,
             validation_steps=validation_steps,
             epochs=MAX_EPOCHS,
-            # callbacks=[WandbCallback()],
+            callbacks=[WandbCallback()],
         )
         model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run))

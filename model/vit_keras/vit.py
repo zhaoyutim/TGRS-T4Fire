@@ -255,7 +255,36 @@ def vit_tiny(
         representation_size=768 if weights == "imagenet21k" else None,
     )
     return model
-
+def vit_tiny_custom(
+        input_shape = (10,45),
+        classes=2,
+        activation="linear",
+        include_top=True,
+        pretrained=True,
+        pretrained_top=True,
+        weights="imagenet21k+imagenet2012",
+        num_heads=3,
+        mlp_dim=768,
+        num_layers=12,
+        hidden_size=192
+):
+    CONFIG_Ti_CUSTOM: ConfigDict = {
+        "dropout": 0.1,
+        "mlp_dim": mlp_dim,
+        "num_heads": num_heads,
+        "num_layers": num_layers,
+        "hidden_size": hidden_size,
+    }
+    model = build_model(
+        **CONFIG_Ti_CUSTOM,
+        name="vit-ti",
+        input_shape=input_shape,
+        classes=classes,
+        activation=activation,
+        include_top=include_top,
+        representation_size=768 if weights == "imagenet21k" else None,
+    )
+    return model
 def vit_tiny_12_2(
         input_shape = (10,45),
         classes=2,
