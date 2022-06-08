@@ -71,8 +71,8 @@ if __name__=='__main__':
     print(run)
 
     MAX_EPOCHS = 50
-    learning_rate = 0.00001
-    weight_decay = 0.000001
+    learning_rate = 0.001
+    weight_decay = 0.0001
 
     num_classes=2
     input_shape=(10,pow(window_size,2)*5)
