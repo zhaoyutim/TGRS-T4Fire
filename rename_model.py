@@ -13,7 +13,6 @@ if __name__=='__main__':
     parser.add_argument('-nl', type=int, help='num_layers')
     args = parser.parse_args()
     model_name = args.m
-    load_weights = args.p
     window_size = args.w
     run = args.r
     num_heads=args.nh
