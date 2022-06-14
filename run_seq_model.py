@@ -305,5 +305,7 @@ if __name__=='__main__':
         )
         if model_name != 'vit_tiny_custom':
             model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run))
+        elif model_name != 'gru_custom' and model_name != 'lstm_custom':
+            model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(hidden_size)+'_'+str(num_layers))
         else:
-            model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run).join('_'+str(num_heads)).join('_'+str(mlp_dim)).join('_'+str(hidden_size)).join('_'+str(num_layers)))
+            model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers))
