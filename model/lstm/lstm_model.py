@@ -111,3 +111,12 @@ class LSTMModel:
             tf.keras.layers.Dense(num_class, activation='sigmoid')
         ])
         return lstm_model
+
+    def get_model_custom(self, input_shape, num_class, num_layers, hidden_size):
+        lstm_model = tf.keras.models.Sequential([
+            tf.keras.layers.LSTM(hidden_size, input_shape=input_shape, return_sequences=True),
+        ])
+        for i in range(num_layers-1):
+            lstm_model.add(tf.keras.layers.GRU(hidden_size, dropout=0.2,return_sequences=True))
+        lstm_model.add(tf.keras.layers.Dense(num_class,activation='sigmoid'))
+        return lstm_model

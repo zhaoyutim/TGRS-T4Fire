@@ -97,6 +97,15 @@ class GRUModel:
         ])
         return gru_model
 
+    def get_model_custom(self, input_shape, num_class, num_layers, hidden_size):
+        gru_model = tf.keras.models.Sequential([
+            tf.keras.layers.GRU(512, input_shape=input_shape, return_sequences=True),
+        ])
+        for i in range(num_layers-1):
+            gru_model.add(tf.keras.layers.GRU(hidden_size, dropout=0.2,return_sequences=True))
+        gru_model.add(tf.keras.layers.Dense(num_class,activation='sigmoid'))
+        return gru_model
+
     def get_model_bi(self, input_shape, num_class):
         gru_model = tf.keras.models.Sequential([
             Bidirectional(tf.keras.layers.GRU(512, return_sequences=True), input_shape=input_shape),
