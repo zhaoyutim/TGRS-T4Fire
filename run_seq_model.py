@@ -17,7 +17,16 @@ def get_dateset(window_size, batch_size):
     y_dataset[: ,:, 0] = x_dataset[:, :, pow(window_size,2)*5] == 0
     y_dataset[:, :, 1] = x_dataset[:, :, pow(window_size,2)*5] > 0
 
-    x_train, x_val, y_train, y_val = train_test_split(x_dataset[:,:,:pow(window_size,2)*5], y_dataset, test_size=0.2, random_state=0)
+    x_dataset_val1 = np.load('/geoinfo_vol1/zhao2/proj3_walker_fire_w'+str(window_size)+'.npy')
+    x_dataset_val2 = np.load('/geoinfo_vol1/zhao2/proj3_hanceville_fire_w'+str(window_size)+'.npy')
+
+    x_dataset_val = np.concatenate((x_dataset_val1, x_dataset_val2), axis=0)
+    y_dataset_val = np.zeros((x_dataset_val.shape[0],x_dataset_val.shape[1],2))
+    y_dataset_val[: ,:, 0] = x_dataset_val[:, :, pow(window_size,2)*5] == 0
+    y_dataset_val[:, :, 1] = x_dataset_val[:, :, pow(window_size,2)*5] > 0
+
+    # x_train, x_val, y_train, y_val = train_test_split(x_dataset[:,:,:pow(window_size,2)*5], y_dataset, test_size=0.2, random_state=0)
+    x_train, x_val, y_train, y_val = x_dataset[:,:,:pow(window_size,2)*5], x_dataset_val[:,:,:pow(window_size,2)*5], y_dataset, y_dataset_val
 
     def make_generator(inputs, labels):
         def _generator():
