@@ -111,8 +111,10 @@ class MultiHeadSelfAttention(tf.keras.layers.Layer):
         query = self.separate_heads(query, batch_size)
         key = self.separate_heads(key, batch_size)
         value = self.separate_heads(value, batch_size)
-        tri_matrix = tf.experimental.numpy.tril(tf.ones([self.sequence_length,self.sequence_length]), 0)
-        attention_mask = tf.reshape(tf.stack([tri_matrix]*3), (batch_size, self.num_heads, self.sequence_length, -1))
+
+        tri_matrix = tf.stack([tf.experimental.numpy.tril(tf.ones([batch_size, self.sequence_length,self.sequence_length]), 0)]*self.num_heads)
+        tri_matrix = tf.transpose(tri_matrix, perm=[1, 0, 2, 3])
+        attention_mask = tf.reshape(tri_matrix, (batch_size, self.num_heads, self.sequence_length, -1))
 
         attention, weights = self.attention(query, key, value, attention_mask)
         attention = tf.transpose(attention, perm=[0, 2, 1, 3])
