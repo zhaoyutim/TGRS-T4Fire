@@ -72,6 +72,7 @@ class MultiHeadSelfAttention(tf.keras.layers.Layer):
 
     def build(self, input_shape):
         hidden_size = input_shape[-1]
+        self.sequence_length = input_shape[-2]
         # print(hidden_size)
         num_heads = self.num_heads
         if hidden_size % num_heads != 0:
@@ -104,7 +105,6 @@ class MultiHeadSelfAttention(tf.keras.layers.Layer):
 
     def call(self, inputs):
         batch_size = tf.shape(inputs)[0]
-        query_size = tf.shape(inputs)[1]
         query = self.query_dense(inputs)
         key = self.key_dense(inputs)
         value = self.value_dense(inputs)
@@ -112,7 +112,7 @@ class MultiHeadSelfAttention(tf.keras.layers.Layer):
         key = self.separate_heads(key, batch_size)
         value = self.separate_heads(value, batch_size)
 
-        attention_mask = tf.convert_to_tensor(np.tile(np.tril(np.ones((query_size,query_size)), 0), (batch_size, self.num_heads, 1, 1)), dtype=bool)
+        attention_mask = tf.convert_to_tensor(np.tile(np.tril(np.ones((self.sequence_length,self.sequence_length)), 0), (batch_size, self.num_heads, 1, 1)), dtype=bool)
 
         attention, weights = self.attention(query, key, value, attention_mask)
         attention = tf.transpose(attention, perm=[0, 2, 1, 3])
