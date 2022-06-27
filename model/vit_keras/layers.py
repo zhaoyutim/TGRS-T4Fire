@@ -1,6 +1,8 @@
 # pylint: disable=arguments-differ,missing-function-docstring,missing-class-docstring,unexpected-keyword-arg,no-value-for-parameter
+import numpy as np
 import tensorflow as tf
 import tensorflow_addons as tfa
+from tensorflow.python.ops import array_ops
 
 
 @tf.keras.utils.register_keras_serializable()
@@ -82,15 +84,19 @@ class MultiHeadSelfAttention(tf.keras.layers.Layer):
         self.key_dense = tf.keras.layers.Dense(hidden_size, name="key")
         self.value_dense = tf.keras.layers.Dense(hidden_size, name="value")
         self.combine_heads = tf.keras.layers.Dense(hidden_size, name="out")
-
+        self.softmax = tf.keras.layers.Softmax()
     # pylint: disable=no-self-use
-    def attention(self, query, key, value):
+    def attention(self, query, key, value, attention_mask):
         score = tf.matmul(query, key, transpose_b=True)
         dim_key = tf.cast(tf.shape(key)[-1], score.dtype)
         scaled_score = score / tf.math.sqrt(dim_key)
-        weights = tf.nn.softmax(scaled_score, axis=-1)
+        # weights = tf.nn.softmax(scaled_score, axis=-1)
+        weights = self._masked_softmax(scaled_score, attention_mask)
         output = tf.matmul(weights, value)
         return output, weights
+
+    def _masked_softmax(self, attention_scores, attention_mask=None):
+        return self.softmax(inputs=attention_scores, mask=attention_mask)
 
     def separate_heads(self, x, batch_size):
         x = tf.reshape(x, (batch_size, -1, self.num_heads, self.projection_dim))
@@ -98,6 +104,7 @@ class MultiHeadSelfAttention(tf.keras.layers.Layer):
 
     def call(self, inputs):
         batch_size = tf.shape(inputs)[0]
+        query_size = tf.shape(inputs)[1]
         query = self.query_dense(inputs)
         key = self.key_dense(inputs)
         value = self.value_dense(inputs)
@@ -105,7 +112,9 @@ class MultiHeadSelfAttention(tf.keras.layers.Layer):
         key = self.separate_heads(key, batch_size)
         value = self.separate_heads(value, batch_size)
 
-        attention, weights = self.attention(query, key, value)
+        attention_mask = tf.convert_to_tensor(np.tile(np.tril(np.ones((query_size,query_size)), 0), (batch_size, self.num_heads, 1, 1)), dtype=bool)
+
+        attention, weights = self.attention(query, key, value, attention_mask)
         attention = tf.transpose(attention, perm=[0, 2, 1, 3])
         concat_attention = tf.reshape(attention, (batch_size, -1, self.hidden_size))
         output = self.combine_heads(concat_attention)
