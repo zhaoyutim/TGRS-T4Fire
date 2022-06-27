@@ -246,7 +246,7 @@ if __name__=='__main__':
             gru = GRUModel(input_shape, num_classes)
             model = gru.get_model_custom(input_shape, num_classes, num_layers, hidden_size)
 
-        elif model_name == 'gru5_bi':
+        elif model_name == 'gru3_bi':
             gru = GRUModel(input_shape, num_classes)
             model = gru.get_model_bi(input_shape, num_classes)
         elif model_name == 'lstm5':
@@ -265,7 +265,7 @@ if __name__=='__main__':
             lstm = LSTMModel(input_shape, num_classes)
             model = lstm.get_model_custom(input_shape, num_classes, num_layers, hidden_size)
 
-        elif model_name == 'lstm5_bi':
+        elif model_name == 'lstm3_bi':
             lstm = LSTMModel(input_shape, num_classes)
             model = lstm.get_model_bi(input_shape, num_classes)
         elif model_name=='vit_base':

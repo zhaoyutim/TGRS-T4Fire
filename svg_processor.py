@@ -3,6 +3,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 
 path = '/Users/zhaoyu/PycharmProjects/T4Fire/svg/afdes2.csv'
+# path = '/Users/zhaoyu/PycharmProjects/T4Fire/svg/afdes1.csv'
 if __name__=='__main__':
     df = pd.read_csv(path)
     df['b4_avg']=df['b4'].rolling(1).sum()
@@ -11,8 +12,8 @@ if __name__=='__main__':
     print(df.head(5))
     plt.rc('xtick', labelsize=12)
     plt.rc('ytick', labelsize=12)
-    df.plot(x="Date", y=['b4', 'b5'], figsize=(10,5))
-    plt.savefig('afdes2.svg', bbox_inches='tight')
+    df.plot(x="Date", y=['b4', 'b5'], figsize=(10,5), ylim=(250, 350))
+    plt.savefig('/Users/zhaoyu/PycharmProjects/T4Fire/svg/afdes2.svg', bbox_inches='tight')
     plt.show()
     # plt.imshow(path)
     # plt.show()

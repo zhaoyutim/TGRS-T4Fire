@@ -111,8 +111,6 @@ class GRUModel:
             Bidirectional(tf.keras.layers.GRU(512, return_sequences=True), input_shape=input_shape),
             Bidirectional(tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True)),
             Bidirectional(tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True)),
-            Bidirectional(tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True)),
-            Bidirectional(tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True)),
             tf.keras.layers.Dense(num_class, activation='sigmoid')
         ])
         return gru_model
