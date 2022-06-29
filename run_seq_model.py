@@ -312,7 +312,6 @@ if __name__=='__main__':
         print('training in progress')
         history = model.fit(
             x=train_dataset,
-            batch_size=batch_size,
             steps_per_epoch=steps_per_epoch,
             validation_data=val_dataset,
             validation_steps=validation_steps,
