@@ -44,10 +44,10 @@ def get_dateset(window_size, batch_size):
                                                  (tf.float32, tf.int16))
 
     train_dataset = train_dataset.shuffle(batch_size).repeat(MAX_EPOCHS).batch(batch_size)
-    val_dataset = val_dataset.shuffle(batch_size).repeat(MAX_EPOCHS).batch(batch_size)
+    val_dataset = val_dataset.shuffle(batch_size).repeat(MAX_EPOCHS).batch(224*224)
 
     steps_per_epoch = x_train.shape[0]//batch_size
-    validation_steps = x_val.shape[0]//batch_size
+    validation_steps = x_val.shape[0]//(224*224)
 
     return train_dataset, val_dataset, steps_per_epoch, validation_steps
 
