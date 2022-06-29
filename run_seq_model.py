@@ -305,7 +305,7 @@ if __name__=='__main__':
     options.experimental_distribute.auto_shard_policy = tf.data.experimental.AutoShardPolicy.OFF
     train_dataset = train_dataset.with_options(options)
     val_dataset = val_dataset.with_options(options)
-
+    metrics = ValidationAccuracy(val_dataset, validation_steps)
     if load_weights== 'yes':
         model.load_weights('/geoinfo_vol1/zhao2/proj3_' + model_name + 'w' + str(window_size) + '_nopretrained'+'_run'+str(run))
     else:
@@ -317,7 +317,7 @@ if __name__=='__main__':
             validation_data=val_dataset,
             validation_steps=validation_steps,
             epochs=MAX_EPOCHS,
-            callbacks=[WandbCallback(), checkpoint, ValidationAccuracy()],
+            callbacks=[WandbCallback(), checkpoint, metrics],
         )
         if model_name == 'vit_tiny_custom':
             model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers)+'_'+str(batch_size))
