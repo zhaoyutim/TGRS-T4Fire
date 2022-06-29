@@ -10,6 +10,7 @@ from wandb.integration.keras import WandbCallback
 
 from model.lstm.lstm_model import LSTMModel
 from model.gru.gru_model import GRUModel
+from model.validation_metrics import ValidationAccuracy
 from model.vit_keras import vit
 def get_dateset(window_size, batch_size):
     x_dataset = np.load('/geoinfo_vol1/zhao2/proj3_train_v2_w'+str(window_size)+'.npy')
@@ -282,7 +283,6 @@ if __name__=='__main__':
             raise('no suport model')
 
         model.summary()
-
         optimizer = tfa.optimizers.AdamW(
             learning_rate=learning_rate, weight_decay=weight_decay
         )
@@ -317,7 +317,7 @@ if __name__=='__main__':
             validation_data=val_dataset,
             validation_steps=validation_steps,
             epochs=MAX_EPOCHS,
-            callbacks=[WandbCallback(), checkpoint],
+            callbacks=[WandbCallback(), checkpoint, ValidationAccuracy()],
         )
         if model_name == 'vit_tiny_custom':
             model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers)+'_'+str(batch_size))
