@@ -55,7 +55,7 @@ def wandb_config(window_size, model_name, run, num_heads, num_layers, mlp_dim, h
     wandb.login()
     # wandb.init(project="tokenized_window_size" + str(window_size) + str(model_name) + 'run' + str(run), entity="zhaoyutim")
     wandb.init(project="proj3_"+model_name+"_grid_search", entity="zhaoyutim")
-    wandb.run.name = 'num_heads_' + str(num_heads) + 'num_layers_'+ str(num_layers)+ 'mlp_dim_'+str(mlp_dim)+'hidden_size_'+str(hidden_size)
+    wandb.run.name = 'num_heads_' + str(num_heads) + 'num_layers_'+ str(num_layers)+ 'mlp_dim_'+str(mlp_dim)+'hidden_size_'+str(hidden_size)+'batchsize_'+str(batch_size)
     wandb.config = {
         "learning_rate": learning_rate,
         "weight_decay": weight_decay,
@@ -320,7 +320,7 @@ if __name__=='__main__':
             callbacks=[WandbCallback(), checkpoint],
         )
         if model_name == 'vit_tiny_custom':
-            model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers))
+            model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers)+'_'+str(batch_size))
         elif model_name == 'gru_custom' or model_name == 'lstm_custom':
             model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(hidden_size)+'_'+str(num_layers))
         else:
