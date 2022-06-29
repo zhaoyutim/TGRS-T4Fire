@@ -44,7 +44,7 @@ def get_dateset(window_size, batch_size):
                                                  (tf.float32, tf.int16))
 
     train_dataset = train_dataset.shuffle(batch_size).repeat(MAX_EPOCHS).batch(batch_size)
-    val_dataset = val_dataset.shuffle(batch_size).repeat(MAX_EPOCHS).batch(224*224)
+    val_dataset = val_dataset.repeat(MAX_EPOCHS).batch(224*224)
 
     steps_per_epoch = x_train.shape[0]//batch_size
     validation_steps = x_val.shape[0]//(224*224)
@@ -317,7 +317,7 @@ if __name__=='__main__':
             validation_data=val_dataset,
             validation_steps=validation_steps,
             epochs=MAX_EPOCHS,
-            callbacks=[WandbCallback(), checkpoint, metrics],
+            callbacks=[WandbCallback(), checkpoint],
         )
         if model_name == 'vit_tiny_custom':
             model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers)+'_'+str(batch_size))
