@@ -69,10 +69,10 @@ class TokenizeProcessor:
 
 
 if __name__=='__main__':
-    window_size = 5
+    window_size = 1
     locations= ['swedish_fire']
     for location in locations:
-        tokenize_processor = TokenizeProcessor('../data/proj3_'+location+'_img.npy')
+        tokenize_processor = TokenizeProcessor('/Users/zhaoyu/PycharmProjects/CalFireMonitoring/data_train_proj3/proj3_'+location+'_img.npy')
         tokenized_array = tokenize_processor.tokenizing(window_size)
         np.nan_to_num(tokenized_array)
         np.save('../data/proj3_'+location+'_w'+str(window_size)+'.npy', tokenized_array.reshape(-1,10,pow(window_size,2)*5+2))
