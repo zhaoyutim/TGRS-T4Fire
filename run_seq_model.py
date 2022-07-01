@@ -70,6 +70,8 @@ def wandb_config(window_size, model_name, run, num_heads, num_layers, mlp_dim, h
 
 
 if __name__=='__main__':
+    import os
+    os.environ["TF_FORCE_GPU_ALLOW_GROWTH"]="true"
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-m', type=str, help='Model to be executed')
     parser.add_argument('-w', type=int, help='Window size')
