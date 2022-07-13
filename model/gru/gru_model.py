@@ -99,7 +99,7 @@ class GRUModel:
 
     def get_model_custom(self, input_shape, num_class, num_layers, hidden_size):
         gru_model = tf.keras.models.Sequential([
-            tf.keras.layers.GRU(512, input_shape=input_shape, return_sequences=True),
+            tf.keras.layers.GRU(hidden_size, input_shape=input_shape, return_sequences=True),
         ])
         for i in range(num_layers-1):
             gru_model.add(tf.keras.layers.GRU(hidden_size, dropout=0.2,return_sequences=True))

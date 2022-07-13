@@ -69,7 +69,7 @@ class TokenizeProcessor:
 
 
 if __name__=='__main__':
-    window_size = 1
+    window_size = 5
     locations= ['swedish_fire']
     for location in locations:
         tokenize_processor = TokenizeProcessor('/Users/zhaoyu/PycharmProjects/CalFireMonitoring/data_train_proj3/proj3_'+location+'_img.npy')
