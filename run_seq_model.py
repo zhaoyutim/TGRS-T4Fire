@@ -56,7 +56,7 @@ def get_dateset(window_size, batch_size):
 def wandb_config(window_size, model_name, run, num_heads, num_layers, mlp_dim, hidden_size):
     wandb.login()
     # wandb.init(project="tokenized_window_size" + str(window_size) + str(model_name) + 'run' + str(run), entity="zhaoyutim")
-    wandb.init(project="proj3_"+model_name+"_grid_search", entity="zhaoyutim")
+    wandb.init(project="proj5_"+model_name+"_grid_search", entity="zhaoyutim")
     wandb.run.name = 'num_heads_' + str(num_heads) + 'num_layers_'+ str(num_layers)+ 'mlp_dim_'+str(mlp_dim)+'hidden_size_'+str(hidden_size)+'batchsize_'+str(batch_size)
     wandb.config = {
         "learning_rate": learning_rate,
