@@ -18,7 +18,18 @@ class TokenizeProcessor:
                     output_array[num_sample, i-padding, j-padding, :, :] = self.flatten_window(padded_array[num_sample, i-padding:i+padding+1, j-padding:j+padding+1, :, :], window_size)
         # print(output_array.shape)
         return output_array
+    def tokenizing_proj5(self, window_size):
+        output_shape = (self.array.shape[0], self.array.shape[1], self.array.shape[2], self.array.shape[3], (self.array.shape[4]-2) * pow(window_size, 2)+2)
 
+        output_array = np.zeros(output_shape)
+        padding = window_size // 2
+        padded_array = np.pad(self.array, pad_width=((0,0),(padding,padding),(padding,padding),(0,0),(0,0)), mode='constant', constant_values=0)
+        shape = padded_array.shape[1]
+        for num_sample in range(self.array.shape[0]):
+            for i in range(padding, shape-padding):
+                for j in range(padding, shape-padding):
+                    output_array[num_sample, i-padding, j-padding, :, :] = self.flatten_window(padded_array[num_sample, i-padding:i+padding+1, j-padding:j+padding+1, :, :], window_size)
+        return output_array
     def tokenizing_patch_segment(self, window_size):
         padding = window_size // 2
         padded_array = np.pad(self.array, pad_width=((0, 0), (padding, padding), (padding, padding), (0, 0), (0, 0)),
@@ -69,13 +80,13 @@ class TokenizeProcessor:
 
 
 if __name__=='__main__':
-    window_size = 5
-    locations= ['swedish_fire']
+    window_size = 1
+    locations= ['allfire']
     for location in locations:
-        tokenize_processor = TokenizeProcessor('/Users/zhaoyu/PycharmProjects/CalFireMonitoring/data_train_proj3/proj3_'+location+'_img.npy')
+        tokenize_processor = TokenizeProcessor('/Users/zhaoyu/PycharmProjects/CalFireMonitoring/data_train_proj5/proj5_'+location+'_img.npy')
         tokenized_array = tokenize_processor.tokenizing(window_size)
         np.nan_to_num(tokenized_array)
-        np.save('../data/proj3_'+location+'_w'+str(window_size)+'.npy', tokenized_array.reshape(-1,10,pow(window_size,2)*5+2))
+        np.save('../data/proj5_'+location+'_w'+str(window_size)+'.npy', tokenized_array.reshape(-1,10,pow(window_size,2)*5+2))
     # np.save('../data/proj3_test_w' + str(window_size) + 'patch_seg.npy',
     #         tokenized_array)
     # np.save('../data/proj3_test_w' + str(window_size) + 'label.npy',
