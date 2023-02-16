@@ -28,7 +28,7 @@ def get_dateset(window_size, batch_size):
     # y_dataset_val[: ,:, 0] = x_dataset_val[:, :, pow(window_size,2)*5] == 0
     # y_dataset_val[:, :, 1] = x_dataset_val[:, :, pow(window_size,2)*5] > 0
 
-    x_train, x_val, y_train, y_val = train_test_split(x_dataset[:,:,:pow(window_size,2)*5], y_dataset, test_size=0.2, random_state=0)
+    x_train, x_val, y_train, y_val = train_test_split(x_dataset[:,:,:pow(window_size,2)*5+1], y_dataset, test_size=0.2, random_state=0)
     # x_train, x_val, y_train, y_val = x_dataset[:,:,:pow(window_size,2)*5], x_dataset_val[:,:,:pow(window_size,2)*5], y_dataset, y_dataset_val
 
     def make_generator(inputs, labels):
@@ -100,7 +100,7 @@ if __name__=='__main__':
     weight_decay = lr / 10
 
     num_classes=2
-    input_shape=(10,pow(window_size,2)*5)
+    input_shape=(10,pow(window_size,2)*5+1)
 
     train_dataset, val_dataset, steps_per_epoch, validation_steps = get_dateset(window_size, batch_size)
 
