@@ -290,11 +290,11 @@ if __name__=='__main__':
             learning_rate=learning_rate, weight_decay=weight_decay
         )
         if model_name == 'vit_tiny_custom':
-            checkpoint = ModelCheckpoint('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers)+'_'+str(batch_size), monitor="val_loss", mode="min", save_best_only=True, verbose=1)
+            checkpoint = ModelCheckpoint('/geoinfo_vol1/zhao2/proj5_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers)+'_'+str(batch_size), monitor="val_loss", mode="min", save_best_only=True, verbose=1)
         elif model_name == 'gru_custom' or model_name == 'lstm_custom':
-            checkpoint = ModelCheckpoint('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(hidden_size)+'_'+str(num_layers), monitor="val_loss", mode="min", save_best_only=True, verbose=1)
+            checkpoint = ModelCheckpoint('/geoinfo_vol1/zhao2/proj5_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(hidden_size)+'_'+str(num_layers), monitor="val_loss", mode="min", save_best_only=True, verbose=1)
         else:
-            checkpoint = ModelCheckpoint('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run), monitor="val_loss", mode="min", save_best_only=True, verbose=1)
+            checkpoint = ModelCheckpoint('/geoinfo_vol1/zhao2/proj5_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run), monitor="val_loss", mode="min", save_best_only=True, verbose=1)
 
         model.compile(
             optimizer=optimizer,
@@ -310,7 +310,7 @@ if __name__=='__main__':
     val_dataset = val_dataset.with_options(options)
     metrics = ValidationAccuracy(val_dataset, validation_steps)
     if load_weights== 'yes':
-        model.load_weights('/geoinfo_vol1/zhao2/proj3_' + model_name + 'w' + str(window_size) + '_nopretrained'+'_run'+str(run))
+        model.load_weights('/geoinfo_vol1/zhao2/proj5_' + model_name + 'w' + str(window_size) + '_nopretrained'+'_run'+str(run))
     else:
         print('training in progress')
         history = model.fit(
@@ -322,9 +322,9 @@ if __name__=='__main__':
             callbacks=[WandbCallback()],
         )
         if model_name == 'vit_tiny_custom':
-            model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers)+'_'+str(batch_size))
+            model.save('/geoinfo_vol1/zhao2/proj5_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers)+'_'+str(batch_size))
         elif model_name == 'gru_custom' or model_name == 'lstm_custom':
-            model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(hidden_size)+'_'+str(num_layers))
+            model.save('/geoinfo_vol1/zhao2/proj5_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(hidden_size)+'_'+str(num_layers))
         else:
-            model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run))
+            model.save('/geoinfo_vol1/zhao2/proj5_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run))
 
