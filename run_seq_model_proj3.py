@@ -21,7 +21,7 @@ if platform.system() == 'Darwin':
 else:
     root_path = '/geoinfo_vol1/zhao2'
 def get_dateset(window_size, batch_size):
-    x_dataset = np.load(os.path.join(root_path, 'proj3_allfire_w' + str(window_size) + '.npy'))
+    x_dataset = np.load(os.path.join(root_path, 'proj3_train_v2_w' + str(window_size) + '.npy'))
     # x_dataset = np.load('/geoinfo_vol1/zhao2/proj3_allfire_w' + str(window_size) + '.npy')
     # x_dataset = x_dataset[:,::-1,:]
     y_dataset = np.zeros((x_dataset.shape[0],x_dataset.shape[1],2))
