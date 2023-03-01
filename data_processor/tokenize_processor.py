@@ -81,7 +81,7 @@ class TokenizeProcessor:
 
 if __name__=='__main__':
     window_size = 1
-    locations= ['allfire']
+    locations= ['sydney']
     for location in locations:
         tokenize_processor = TokenizeProcessor('/Users/zhaoyu/PycharmProjects/CalFireMonitoring/data_train_proj5/proj5_'+location+'_img.npy')
         tokenized_array = tokenize_processor.tokenizing(window_size)
