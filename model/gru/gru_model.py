@@ -17,100 +17,25 @@ class GRUModel:
         possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
         recall = true_positives / (possible_positives + K.epsilon())
         return recall
-
-
     def precision_m(self, y_true, y_pred):
         true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
         predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
         precision = true_positives / (predicted_positives + K.epsilon())
         return precision
-
-
     def f1_m(self, y_true, y_pred):
         precision = self.precision_m(y_true, y_pred)
         recall = self.recall_m(y_true, y_pred)
         return 2 * ((precision * recall) / (precision + recall + K.epsilon()))
-
-
     def r2_keras(self, y_true, y_pred):
         SS_res = K.sum(K.square(y_true - y_pred))
         SS_tot = K.sum(K.square(y_true - K.mean(y_true)))
         return (1 - SS_res / (SS_tot + K.epsilon()))
-
-    def get_model(self, input_shape, num_class):
+    def get_model_custom(self, input_shape, num_class, num_layers, hidden_size, return_sequences=True):
         gru_model = tf.keras.models.Sequential([
-            tf.keras.layers.GRU(512, input_shape=input_shape, return_sequences=True),
-            tf.keras.layers.GRU(512, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(512, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(512, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(256, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(256, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(256, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(256, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(128, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(128, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(128, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(128, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(64, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(64, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(64, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(64, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(32, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(32, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(16, dropout=0.1, return_sequences=True),
-            tf.keras.layers.GRU(16, dropout=0.1, return_sequences=True),
-            tf.keras.layers.Dense(num_class, activation='sigmoid')
+            tf.keras.layers.GRU(hidden_size, dropout=0.2, input_shape=input_shape, return_sequences=True),
         ])
-        return gru_model
-    def get_model_2_layers(self, input_shape, num_class):
-        gru_model = tf.keras.models.Sequential([
-            tf.keras.layers.GRU(512, input_shape=input_shape, return_sequences=True),
-            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
-            tf.keras.layers.Dense(num_class, activation='sigmoid')
-        ])
-        return gru_model
-    def get_model_3_layers(self, input_shape, num_class):
-        gru_model = tf.keras.models.Sequential([
-            tf.keras.layers.GRU(512, input_shape=input_shape, return_sequences=True),
-            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
-            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
-            tf.keras.layers.Dense(num_class, activation='sigmoid')
-        ])
-        return gru_model
-    def get_model_4_layers(self, input_shape, num_class):
-        gru_model = tf.keras.models.Sequential([
-            tf.keras.layers.GRU(512, input_shape=input_shape, return_sequences=True),
-            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
-            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
-            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
-            tf.keras.layers.Dense(num_class, activation='sigmoid')
-        ])
-        return gru_model
-    def get_model_5_layers(self, input_shape, num_class):
-        gru_model = tf.keras.models.Sequential([
-            tf.keras.layers.GRU(512, input_shape=input_shape, return_sequences=True),
-            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
-            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
-            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
-            tf.keras.layers.GRU(512, dropout=0.2, return_sequences=True),
-            tf.keras.layers.Dense(num_class, activation='sigmoid')
-        ])
-        return gru_model
-
-    def get_model_custom(self, input_shape, num_class, num_layers, hidden_size):
-        gru_model = tf.keras.models.Sequential([
-            tf.keras.layers.GRU(hidden_size, input_shape=input_shape, return_sequences=True),
-        ])
-        for i in range(num_layers-1):
-            gru_model.add(tf.keras.layers.GRU(hidden_size, dropout=0.2,return_sequences=True))
-        gru_model.add(tf.keras.layers.Dense(num_class,activation='sigmoid'))
-        return gru_model
-
-    def get_model_bi(self, input_shape, num_class):
-        gru_model = tf.keras.models.Sequential([
-            Bidirectional(tf.keras.layers.GRU(64, return_sequences=True), input_shape=input_shape),
-            Bidirectional(tf.keras.layers.GRU(64, dropout=0.2, return_sequences=True)),
-            Bidirectional(tf.keras.layers.GRU(64, dropout=0.2, return_sequences=True)),
-            tf.keras.layers.Dense(num_class, activation='sigmoid')
-        ])
+        for i in range(num_layers-2):
+            gru_model.add(tf.keras.layers.GRU(hidden_size, dropout=0.2, return_sequences=True))
+        gru_model.add(tf.keras.layers.GRU(hidden_size, dropout=0.2, return_sequences=return_sequences))
+        gru_model.add(tf.keras.layers.Dense(num_class, activation='relu'))
         return gru_model

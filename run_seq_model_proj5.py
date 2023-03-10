@@ -1,4 +1,5 @@
 import argparse
+import platform
 
 import numpy as np
 import tensorflow as tf
@@ -13,24 +14,36 @@ from model.gru.gru_model import GRUModel
 from model.tcn.tcn import compiled_tcn
 from model.validation_metrics import ValidationAccuracy
 from model.vit_keras import vit
-def get_dateset(window_size, batch_size):
-    x_dataset = np.load('/geoinfo_vol1/zhao2/proj3_train_v2_w'+str(window_size)+'.npy')
+
+if platform.system() == 'Darwin':
+    root_path = '/Users/zhaoyu/PycharmProjects/T4Fire/data'
+
+else:
+    root_path = '/geoinfo_vol1/zhao2'
+def get_dateset(window_size, batch_size, mode):
+    x_dataset = np.load(os.path.join(root_path,'proj5_allfire_w'+str(window_size)+'.npy'))
     # x_dataset = np.load('/geoinfo_vol1/zhao2/proj3_allfire_w' + str(window_size) + '.npy')
     # x_dataset = x_dataset[:,::-1,:]
-    y_dataset = np.zeros((x_dataset.shape[0],x_dataset.shape[1],2))
-    y_dataset[: ,:, 0] = x_dataset[:, :, pow(window_size,2)*5+1] == 0
-    y_dataset[:, :, 1] = x_dataset[:, :, pow(window_size,2)*5+1] > 0
 
-    x_dataset_val1 = np.load('/geoinfo_vol1/zhao2/proj3_walker_fire_w'+str(window_size)+'.npy')
-    x_dataset_val2 = np.load('/geoinfo_vol1/zhao2/proj3_hanceville_fire_w'+str(window_size)+'.npy')
+    if mode != 'sw':
+        y_dataset = np.zeros((x_dataset.shape[0], x_dataset.shape[1], 2))
+        y_dataset[: ,:, 0] = x_dataset[:, :, pow(window_size,2)*5+1] == 0
+        y_dataset[:, :, 1] = x_dataset[:, :, pow(window_size,2)*5+1] > 0
+    else:
+        y_dataset = np.zeros((x_dataset.shape[0], 2))
+        y_dataset[:, 0] = x_dataset[:, -1, pow(window_size,2)*5+1] == 0
+        y_dataset[:, 1] = x_dataset[:, -1, pow(window_size,2)*5+1] > 0
 
-    x_dataset_val = np.concatenate((x_dataset_val1, x_dataset_val2), axis=0)
-    y_dataset_val = np.zeros((x_dataset_val.shape[0],x_dataset_val.shape[1],2))
-    y_dataset_val[: ,:, 0] = x_dataset_val[:, :, pow(window_size,2)*5] == 0
-    y_dataset_val[:, :, 1] = x_dataset_val[:, :, pow(window_size,2)*5] > 0
+    # x_dataset_val1 = np.load('/geoinfo_vol1/zhao2/proj3_walker_fire_w'+str(window_size)+'.npy')
+    # x_dataset_val2 = np.load('/geoinfo_vol1/zhao2/proj3_hanceville_fire_w'+str(window_size)+'.npy')
+    #
+    # x_dataset_val = np.concatenate((x_dataset_val1, x_dataset_val2), axis=0)
+    # y_dataset_val = np.zeros((x_dataset_val.shape[0],x_dataset_val.shape[1],2))
+    # y_dataset_val[: ,:, 0] = x_dataset_val[:, :, pow(window_size,2)*5+1] == 0
+    # y_dataset_val[:, :, 1] = x_dataset_val[:, :, pow(window_size,2)*5+1] > 0
 
-    # x_train, x_val, y_train, y_val = train_test_split(x_dataset[:,:,:pow(window_size,2)*5+1], y_dataset, test_size=0.2, random_state=0)
-    x_train, x_val, y_train, y_val = x_dataset[:,:,:pow(window_size,2)*5], x_dataset_val[:,:,:pow(window_size,2)*5], y_dataset, y_dataset_val
+    x_train, x_val, y_train, y_val = train_test_split(x_dataset[:,:,:pow(window_size,2)*5+1], y_dataset, test_size=0.2, random_state=0)
+    # x_train, x_val, y_train, y_val = x_dataset[:,:,:pow(window_size,2)*5], x_dataset_val[:,:,:pow(window_size,2)*5], y_dataset, y_dataset_val
     def make_generator(inputs, labels):
         def _generator():
             for input, label in zip(inputs, labels):
@@ -78,6 +91,8 @@ if __name__=='__main__':
     parser.add_argument('-ed', type=int, help='embedding dimension')
     parser.add_argument('-nl', type=int, help='num_layers')
 
+    parser.add_argument('-mode', type=str, help='sliding window mode or seq tp seq mode')
+
     args = parser.parse_args()
     model_name = args.m
     load_weights = args.p
@@ -87,6 +102,14 @@ if __name__=='__main__':
     mlp_dim=args.md
     num_layers=args.nl
     hidden_size=args.ed
+    mode = args.mode
+
+    if mode == 'sw':
+        # Sequence to One
+        return_sequence = False
+    else:
+        # Sequence to Sequnce
+        return_sequence = True
 
     run = args.r
     lr = args.lr
@@ -96,31 +119,13 @@ if __name__=='__main__':
     num_classes=2
 
     input_shape=(10,pow(window_size,2)*5+1)
-    train_dataset, val_dataset, steps_per_epoch, validation_steps = get_dateset(window_size, batch_size)
+    train_dataset, val_dataset, steps_per_epoch, validation_steps = get_dateset(window_size, batch_size, mode)
 
     wandb_config(window_size, model_name, run, num_heads, mlp_dim, num_layers, hidden_size)
 
     strategy = tf.distribute.MirroredStrategy()
     with strategy.scope():
-        if model_name == 'vit_small':
-            model = vit.vit_small(
-                input_shape=input_shape,
-                classes=num_classes,
-                activation='sigmoid',
-                pretrained=True,
-                include_top=True,
-                pretrained_top=True
-            )
-        elif model_name=='vit_tiny':
-            model = vit.vit_tiny(
-                input_shape=input_shape,
-                classes=num_classes,
-                activation='sigmoid',
-                pretrained=True,
-                include_top=True,
-                pretrained_top=True
-            )
-        elif model_name=='vit_tiny_custom':
+        if model_name=='vit_tiny_custom':
             model = vit.vit_tiny_custom(
                 input_shape=input_shape,
                 classes=num_classes,
@@ -131,29 +136,15 @@ if __name__=='__main__':
                 num_heads=num_heads,
                 mlp_dim=mlp_dim,
                 num_layers=num_layers,
-                hidden_size=hidden_size
+                hidden_size=hidden_size,
+                return_sequence=return_sequence
             )
         elif model_name == 'gru_custom':
             gru = GRUModel(input_shape, num_classes)
-            model = gru.get_model_custom(input_shape, num_classes, num_layers, hidden_size)
-        elif model_name == 'gru3_bi':
-            gru = GRUModel(input_shape, num_classes)
-            model = gru.get_model_bi(input_shape, num_classes)
+            model = gru.get_model_custom(input_shape, num_classes, num_layers, hidden_size, return_sequence)
         elif model_name == 'lstm_custom':
             lstm = LSTMModel(input_shape, num_classes)
-            model = lstm.get_model_custom(input_shape, num_classes, num_layers, hidden_size)
-        elif model_name == 'lstm3_bi':
-            lstm = LSTMModel(input_shape, num_classes)
-            model = lstm.get_model_bi(input_shape, num_classes)
-        elif model_name=='vit_base':
-            model = vit.vit_base(
-                input_shape=input_shape,
-                classes=num_classes,
-                activation='sigmoid',
-                pretrained=False,
-                include_top=True,
-                pretrained_top=True
-            )
+            model = lstm.get_model_custom(input_shape, num_classes, num_layers, hidden_size, return_sequence)
         elif model_name=='tcn':
             model = compiled_tcn(return_sequences=True,
                                  num_feat=input_shape[-1],
@@ -204,7 +195,7 @@ if __name__=='__main__':
             epochs=MAX_EPOCHS,
             callbacks=[WandbCallback()],
         )
-        if model_name == 'vit_tiny_custom':
+        if model_name == 'vit_tiny_custom' or model_name == 'tcn':
             model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers)+'_'+str(batch_size))
         elif model_name == 'gru_custom' or model_name == 'lstm_custom':
             model.save('/geoinfo_vol1/zhao2/proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(hidden_size)+'_'+str(num_layers))

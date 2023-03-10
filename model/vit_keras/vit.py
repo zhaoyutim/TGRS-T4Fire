@@ -133,6 +133,7 @@ def build_model(
     activation="linear",
     include_top=True,
     representation_size=None,
+    return_sequence=True
 ):
     """Build a ViT model.
 
@@ -152,6 +153,7 @@ def build_model(
             the output will have dimensions (batch_size, hidden_size).
         representation_size: The size of the representation prior to the
             classification layer. If None, no Dense layer is inserted.
+        return_sequence: Return Sequence or not.
     """
     x = tf.keras.layers.Input(shape=input_shape)
     proj = tf.keras.layers.Dense(units=hidden_size)(x)
@@ -171,6 +173,8 @@ def build_model(
         y = tf.keras.layers.Dense(
             representation_size, name="pre_logits", activation="tanh"
         )(y)
+    if not return_sequence:
+        y = tf.keras.layers.Flatten()(y)
     if include_top:
         y = tf.keras.layers.Dense(classes, name="head", activation=activation)(y)
     return tf.keras.models.Model(inputs=x, outputs=y, name=name)
@@ -266,7 +270,8 @@ def vit_tiny_custom(
         num_heads=3,
         mlp_dim=768,
         num_layers=12,
-        hidden_size=192
+        hidden_size=192,
+        return_sequence=True
 ):
     CONFIG_Ti_CUSTOM: ConfigDict = {
         "dropout": 0.1,
@@ -283,184 +288,8 @@ def vit_tiny_custom(
         activation=activation,
         include_top=include_top,
         representation_size=768 if weights == "imagenet21k" else None,
+        return_sequence=return_sequence,
     )
-    return model
-def vit_tiny_12_2(
-        input_shape = (10,45),
-        classes=2,
-        activation="linear",
-        include_top=True,
-        pretrained=True,
-        pretrained_top=True,
-        weights="imagenet21k+imagenet2012",
-):
-    model = build_model(
-        **CONFIG_Ti_12_2,
-        name="vit-ti",
-        input_shape=input_shape,
-        classes=classes,
-        activation=activation,
-        include_top=include_top,
-        representation_size=768 if weights == "imagenet21k" else None,
-    )
-    return model
-
-def vit_tiny_12_3(
-        input_shape = (10,45),
-        classes=2,
-        activation="linear",
-        include_top=True,
-        pretrained=True,
-        pretrained_top=True,
-        weights="imagenet21k+imagenet2012",
-):
-    model = build_model(
-        **CONFIG_Ti_12_3,
-        name="vit-ti",
-        input_shape=input_shape,
-        classes=classes,
-        activation=activation,
-        include_top=include_top,
-        representation_size=768 if weights == "imagenet21k" else None,
-    )
-    return model
-
-def vit_tiny_12_1024(
-        input_shape = (10,45),
-        classes=2,
-        activation="linear",
-        include_top=True,
-        pretrained=True,
-        pretrained_top=True,
-        weights="imagenet21k+imagenet2012",
-):
-    model = build_model(
-        **CONFIG_Ti_12_1024,
-        name="vit-ti",
-        input_shape=input_shape,
-        classes=classes,
-        activation=activation,
-        include_top=include_top,
-        representation_size=768 if weights == "imagenet21k" else None,
-    )
-    return model
-def vit_tiny_12_2048(
-        input_shape = (10,45),
-        classes=2,
-        activation="linear",
-        include_top=True,
-        pretrained=True,
-        pretrained_top=True,
-        weights="imagenet21k+imagenet2012",
-):
-    model = build_model(
-        **CONFIG_Ti_12_2048,
-        name="vit-ti",
-        input_shape=input_shape,
-        classes=classes,
-        activation=activation,
-        include_top=include_top,
-        representation_size=768 if weights == "imagenet21k" else None,
-    )
-    return model
-def vit_tiny_3(
-        input_shape = (10,45),
-        classes=2,
-        activation="linear",
-        include_top=True,
-        pretrained=True,
-        pretrained_top=True,
-        weights="imagenet21k+imagenet2012",
-):
-    model = build_model(
-        **CONFIG_Ti_3,
-        name="vit-ti",
-        input_shape=input_shape,
-        classes=classes,
-        activation=activation,
-        include_top=include_top,
-        representation_size=768 if weights == "imagenet21k" else None,
-    )
-    return model
-def vit_tiny_4(
-        input_shape = (10,45),
-        classes=2,
-        activation="linear",
-        include_top=True,
-        pretrained=True,
-        pretrained_top=True,
-        weights="imagenet21k+imagenet2012",
-):
-    model = build_model(
-        **CONFIG_Ti_4,
-        name="vit-ti",
-        input_shape=input_shape,
-        classes=classes,
-        activation=activation,
-        include_top=include_top,
-        representation_size=768 if weights == "imagenet21k" else None,
-    )
-    return model
-def vit_tiny_6(
-        input_shape = (10,45),
-        classes=2,
-        activation="linear",
-        include_top=True,
-        pretrained=True,
-        pretrained_top=True,
-        weights="imagenet21k+imagenet2012",
-):
-    model = build_model(
-        **CONFIG_Ti_6,
-        name="vit-ti_6",
-        input_shape=input_shape,
-        classes=classes,
-        activation=activation,
-        include_top=include_top,
-        representation_size=768 if weights == "imagenet21k" else None,
-    )
-    return model
-
-def vit_tiny_6_2(
-        input_shape = (10,45),
-        classes=2,
-        activation="linear",
-        include_top=True,
-        pretrained=True,
-        pretrained_top=True,
-        weights="imagenet21k+imagenet2012",
-):
-    model = build_model(
-        **CONFIG_Ti_6_2,
-        name="vit-ti_9",
-        input_shape=input_shape,
-        classes=classes,
-        activation=activation,
-        include_top=include_top,
-        representation_size=768 if weights == "imagenet21k" else None,
-    )
-    return model
-def vit_tiny_6_3(
-        input_shape = (10,45),
-        classes=2,
-        activation="linear",
-        include_top=True,
-        pretrained=True,
-        pretrained_top=True,
-        weights="imagenet21k+imagenet2012",
-):
-    model = build_model(
-        **CONFIG_Ti_6_3,
-        name="vit-ti_6_3",
-        input_shape=input_shape,
-        classes=classes,
-        activation=activation,
-        include_top=include_top,
-        representation_size=768 if weights == "imagenet21k" else None,
-    )
-    return model
-
-
 def vit_small(
     input_shape = (10,45),
     classes=2,
@@ -469,6 +298,7 @@ def vit_small(
     pretrained=True,
     pretrained_top=True,
     weights="imagenet21k+imagenet2012",
+
 ):
     model = build_model(
         **CONFIG_S,
@@ -490,71 +320,3 @@ def vit_small(
     #         patch_size=16,
     #     )
     return model
-#
-#
-# def build_model_patch_segment(
-#     input_shape: tuple,
-#     num_layers: int,
-#     hidden_size: int,
-#     num_heads: int,
-#     name: str,
-#     window_size: int,
-#     mlp_dim: int,
-#     dropout=0.1,
-#     activation="linear",
-#     include_top=True,
-#     representation_size=None,
-# ):
-#     x = tf.keras.layers.Input(shape=input_shape)
-#     proj = tf.keras.layers.Dense(units=hidden_size)(x)
-#     y = PatchEncoder(input_shape[0], hidden_size)(x)
-#     y = y + proj
-#     for n in range(num_layers):
-#         y, _ = layers.TransformerBlock(
-#             num_heads=num_heads,
-#             mlp_dim=mlp_dim,
-#             dropout=dropout,
-#             name=f"Transformer/encoderblock_{n}",
-#         )(y)
-#     y = tf.keras.layers.LayerNormalization(
-#         epsilon=1e-6, name="Transformer/encoder_norm"
-#     )(y)
-#     if representation_size is not None:
-#         y = tf.keras.layers.Dense(
-#             representation_size, name="pre_logits", activation="tanh"
-#         )(y)
-#     if include_top:
-#         y = tf.keras.layers.Dense(pow(window_size,2), name="head", activation=activation)(y)
-#     return tf.keras.models.Model(inputs=x, outputs=y, name=name)
-#
-#
-#
-# def vit_small_patch_segment(
-#     input_shape = (10,45),
-#     activation="linear",
-#     include_top=True,
-#     window_size=3,
-#     pretrained=True,
-#     pretrained_top=True,
-#     weights="imagenet21k+imagenet2012",
-# ):
-#     model = build_model_patch_segment(
-#         **CONFIG_S,
-#         name="vit-small",
-#         input_shape=input_shape,
-#         window_size=window_size,
-#         activation=activation,
-#         include_top=include_top,
-#         representation_size=768 if weights == "imagenet21k" else None,
-#     )
-#
-#     # if pretrained:
-#     #     load_pretrained(
-#     #         size="B_16",
-#     #         weights=weights,
-#     #         model=model,
-#     #         pretrained_top=pretrained_top,
-#     #         image_size=input_shape,
-#     #         patch_size=16,
-#     #     )
-#     return model
