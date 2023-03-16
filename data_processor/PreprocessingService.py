@@ -19,10 +19,18 @@ class PreprocessingService:
             array[i,:,:] = (array[i,:,:]-array[i,:,:].mean())/array[i,:,:].std()
         return np.nan_to_num(array)
 
-    def normalization(self, array):
-        n_channels = array.shape[0]
-        for i in range(n_channels):
-            array[i,:,:] = (array[i,:,:]-np.nanmin(array[i,:,:]))/(np.nanmax(array[i,:,:])-np.nanmin(array[i,:,:]))
+    def normalization(self, array, channel_first=True):
+        if len(array.shape)!=2:
+            if channel_first:
+                n_channels = array.shape[0]
+                for i in range(n_channels):
+                    array[i,:,:] = (array[i,:,:]-np.nanmin(array[i,:,:]))/(np.nanmax(array[i,:,:])-np.nanmin(array[i,:,:]))
+            else:
+                n_channels = array.shape[-1]
+                for i in range(n_channels):
+                    array[:,:, i] = (array[:,:, i]-np.nanmin(array[:,:,i]))/(np.nanmax(array[:,:,i])-np.nanmin(array[:,:,i]))
+        else:
+            array[:, :] = (array[:, :] - np.nanmin(array[:, :])) / (np.nanmax(array[:, :]) - np.nanmin(array[:, :]))
         return np.nan_to_num(array)
 
     def read_tiff(self, file_path):

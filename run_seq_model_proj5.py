@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.callbacks import ModelCheckpoint
 from wandb.integration.keras import WandbCallback
 
+from data_processor.tokenize_processor import TokenizeProcessor
 from model.lstm.lstm_model import LSTMModel
 from model.gru.gru_model import GRUModel
 from model.tcn.tcn import compiled_tcn
@@ -20,30 +21,36 @@ if platform.system() == 'Darwin':
 
 else:
     root_path = '/geoinfo_vol1/zhao2'
-def get_dateset(window_size, batch_size, mode):
-    x_dataset = np.load(os.path.join(root_path,'proj5_allfire_w'+str(window_size)+'.npy'))
-    # x_dataset = np.load('/geoinfo_vol1/zhao2/proj3_allfire_w' + str(window_size) + '.npy')
-    # x_dataset = x_dataset[:,::-1,:]
-
-    if mode != 'sw':
-        y_dataset = np.zeros((x_dataset.shape[0], x_dataset.shape[1], 2))
-        y_dataset[: ,:, 0] = x_dataset[:, :, pow(window_size,2)*5+1] == 0
-        y_dataset[:, :, 1] = x_dataset[:, :, pow(window_size,2)*5+1] > 0
+def get_dateset(window_size, batch_size, mode, ts_length):
+    tokenize_processor = TokenizeProcessor()
+    if mode == 'sw':
+        img_dataset = tokenize_processor.tokenizing(os.path.join(root_path,'proj5_train_img_seqtoone_l'+str(ts_length)+'.npy'), window_size)
+        label_dataset = tokenize_processor.tokenizing(os.path.join(root_path, 'proj5_train_label_seqtoone_l' + str(ts_length) + '.npy'), window_size)
+        img_val = tokenize_processor.tokenizing(os.path.join(root_path,'proj5_val_img_seqtoone_l'+str(ts_length)+'.npy'), window_size)
+        label_val = tokenize_processor.tokenizing(os.path.join(root_path,'proj5_val_label_seqtoone_l'+str(ts_length)+'.npy'), window_size)
     else:
-        y_dataset = np.zeros((x_dataset.shape[0], 2))
-        y_dataset[:, 0] = x_dataset[:, -1, pow(window_size,2)*5+1] == 0
-        y_dataset[:, 1] = x_dataset[:, -1, pow(window_size,2)*5+1] > 0
+        img_dataset = tokenize_processor.tokenizing(os.path.join(root_path,'proj5_train_img_seqtoseq_l'+str(ts_length)+'.npy'), window_size)
+        label_dataset = tokenize_processor.tokenizing(os.path.join(root_path, 'proj5_train_label_seqtoseq_l' + str(ts_length) + '.npy'), window_size)
+        img_val = tokenize_processor.tokenizing(os.path.join(root_path,'proj5_val_img_seqtoseq_l'+str(ts_length)+'.npy'), window_size)
+        label_val = tokenize_processor.tokenizing(os.path.join(root_path,'proj5_val_label_seqtoseq_l'+str(ts_length)+'.npy'), window_size)
+    print(img_dataset.shape, label_dataset.shape, img_val.shape, label_val.shape)
+    if mode != 'sw':
+        y_dataset = np.zeros((img_dataset.shape[0], img_dataset.shape[1], 2))
+        y_dataset[: ,:, 0] = label_dataset[:, :, 0] == 0
+        y_dataset[:, :, 1] = label_dataset[:, :, 0] > 0
 
-    # x_dataset_val1 = np.load('/geoinfo_vol1/zhao2/proj3_walker_fire_w'+str(window_size)+'.npy')
-    # x_dataset_val2 = np.load('/geoinfo_vol1/zhao2/proj3_hanceville_fire_w'+str(window_size)+'.npy')
-    #
-    # x_dataset_val = np.concatenate((x_dataset_val1, x_dataset_val2), axis=0)
-    # y_dataset_val = np.zeros((x_dataset_val.shape[0],x_dataset_val.shape[1],2))
-    # y_dataset_val[: ,:, 0] = x_dataset_val[:, :, pow(window_size,2)*5+1] == 0
-    # y_dataset_val[:, :, 1] = x_dataset_val[:, :, pow(window_size,2)*5+1] > 0
+        y_val = np.zeros((label_dataset.shape[0], label_dataset.shape[1], 2))
+        y_val[: ,:, 0] = label_val[:, :, 0] == 0
+        y_val[:, :, 1] = label_val[:, :, 0] > 0
+    else:
+        y_dataset = np.zeros((img_dataset.shape[0], 2))
+        y_dataset[:, 0] = label_dataset[:, 0] == 0
+        y_dataset[:, 1] = label_dataset[:, 0] > 0
+        y_val = np.zeros((label_dataset.shape[0], 2))
+        y_val[:, 0] = label_val[:, 0] == 0
+        y_val[:, 1] = label_val[:, 0] > 0
 
-    x_train, x_val, y_train, y_val = train_test_split(x_dataset[:,:,:pow(window_size,2)*5+1], y_dataset, test_size=0.2, random_state=0)
-    # x_train, x_val, y_train, y_val = x_dataset[:,:,:pow(window_size,2)*5], x_dataset_val[:,:,:pow(window_size,2)*5], y_dataset, y_dataset_val
+    x_train, x_val, y_train, y_val = img_dataset, img_val, y_dataset, y_val
     def make_generator(inputs, labels):
         def _generator():
             for input, label in zip(inputs, labels):
@@ -55,15 +62,15 @@ def get_dateset(window_size, batch_size, mode):
     val_dataset = tf.data.Dataset.from_generator(make_generator(x_val, y_val),
                                                  (tf.float32, tf.int16))
     train_dataset = train_dataset.shuffle(batch_size).repeat(MAX_EPOCHS).batch(batch_size)
-    val_dataset = val_dataset.repeat(MAX_EPOCHS).batch(224*224)
+    val_dataset = val_dataset.repeat(MAX_EPOCHS).batch(512*512)
     steps_per_epoch = x_train.shape[0]//batch_size
-    validation_steps = x_val.shape[0]//(224*224)
+    validation_steps = x_val.shape[0]//(512*512)
     return train_dataset, val_dataset, steps_per_epoch, validation_steps
-def wandb_config(window_size, model_name, run, num_heads, num_layers, mlp_dim, hidden_size):
+def wandb_config(model_name, run, num_heads, num_layers, mlp_dim, hidden_size):
     wandb.login()
     # wandb.init(project="tokenized_window_size" + str(window_size) + str(model_name) + 'run' + str(run), entity="zhaoyutim")
     wandb.init(project="proj3_"+model_name+"_grid_search", entity="zhaoyutim")
-    wandb.run.name = 'num_heads_' + str(num_heads) + 'num_layers_'+ str(num_layers)+ 'mlp_dim_'+str(mlp_dim)+'hidden_size_'+str(hidden_size)+'batchsize_'+str(batch_size)
+    wandb.run.name = 'num_heads_' + str(num_heads) + 'num_layers_'+ str(num_layers)+ 'mlp_dim_'+str(mlp_dim)+'hidden_size_'+str(hidden_size)+'batchsize_'+str(batch_size)+'run_'+str(run)
     wandb.config = {
         "learning_rate": learning_rate,
         "weight_decay": weight_decay,
@@ -80,8 +87,6 @@ if __name__=='__main__':
     os.environ["TF_FORCE_GPU_ALLOW_GROWTH"]="true"
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-m', type=str, help='Model to be executed')
-    parser.add_argument('-w', type=int, help='Window size')
-    parser.add_argument('-p', type=str, help='Load trained weights')
     parser.add_argument('-b', type=int, help='batch size')
     parser.add_argument('-r', type=int, help='run')
     parser.add_argument('-lr', type=float, help='learning rate')
@@ -96,7 +101,6 @@ if __name__=='__main__':
     args = parser.parse_args()
     model_name = args.m
     load_weights = args.p
-    window_size = args.w
     batch_size=args.b
     num_heads=args.nh
     mlp_dim=args.md
@@ -117,11 +121,12 @@ if __name__=='__main__':
     learning_rate = lr
     weight_decay = lr / 10
     num_classes=2
+    window_size=1
 
     input_shape=(10,pow(window_size,2)*5+1)
-    train_dataset, val_dataset, steps_per_epoch, validation_steps = get_dateset(window_size, batch_size, mode)
+    train_dataset, val_dataset, steps_per_epoch, validation_steps = get_dateset(window_size=window_size, batch_size=batch_size, mode=mode, ts_length=10)
 
-    wandb_config(window_size, model_name, run, num_heads, mlp_dim, num_layers, hidden_size)
+    wandb_config(model_name, run, num_heads, mlp_dim, num_layers, hidden_size)
 
     strategy = tf.distribute.MirroredStrategy()
     with strategy.scope():
