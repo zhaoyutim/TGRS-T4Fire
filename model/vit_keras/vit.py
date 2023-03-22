@@ -290,6 +290,8 @@ def vit_tiny_custom(
         representation_size=768 if weights == "imagenet21k" else None,
         return_sequence=return_sequence,
     )
+    return model
+
 def vit_small(
     input_shape = (10,45),
     classes=2,

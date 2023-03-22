@@ -1,5 +1,7 @@
 import argparse
+import os
 import platform
+import random
 
 import numpy as np
 import tensorflow as tf
@@ -20,6 +22,22 @@ if platform.system() == 'Darwin':
 
 else:
     root_path = '/geoinfo_vol1/zhao2'
+
+def set_global_seed(seed=21):
+    # Tensorflow
+    try:
+        import tensorflow as tf
+    except ImportError:
+        pass
+    else:
+        tf.random.set_seed(seed)
+
+    # NumPy
+    np.random.seed(seed)
+
+    # Python
+    random.seed(seed)
+
 def get_dateset(window_size, batch_size):
     x_dataset = np.load(os.path.join(root_path, 'proj3_train_v2_w' + str(window_size) + '.npy'))
     # x_dataset = np.load('/geoinfo_vol1/zhao2/proj3_allfire_w' + str(window_size) + '.npy')
@@ -70,8 +88,7 @@ def wandb_config(window_size, model_name, run, num_heads, num_layers, mlp_dim, h
     }
 
 if __name__=='__main__':
-    import os
-    os.environ["TF_FORCE_GPU_ALLOW_GROWTH"]="true"
+    set_global_seed(seed=42)
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-m', type=str, help='Model to be executed')
     parser.add_argument('-w', type=int, help='Window size')
