@@ -101,8 +101,6 @@ if __name__=='__main__':
     parser.add_argument('-md', type=int, help='mlp-dimension')
     parser.add_argument('-ed', type=int, help='embedding dimension')
     parser.add_argument('-nl', type=int, help='num_layers')
-    parser.add_argument('-msk', type=bool, help='is masked')
-
     args = parser.parse_args()
     model_name = args.m
     load_weights = args.p
@@ -112,7 +110,7 @@ if __name__=='__main__':
     mlp_dim=args.md
     num_layers=args.nl
     hidden_size=args.ed
-    is_masked=args.msk
+    is_masked=False
 
     run = args.r
     lr = args.lr
@@ -122,7 +120,6 @@ if __name__=='__main__':
     num_classes=2
 
     input_shape=(10,pow(window_size,2)*5)
-    train_dataset, val_dataset, steps_per_epoch, validation_steps = get_dateset(window_size, batch_size)
 
     wandb_config(window_size, model_name, run, num_heads, mlp_dim, num_layers, hidden_size)
 
@@ -185,6 +182,8 @@ if __name__=='__main__':
         optimizer = tfa.optimizers.AdamW(
             learning_rate=learning_rate, weight_decay=weight_decay
         )
+        train_dataset, val_dataset, steps_per_epoch, validation_steps = get_dateset(window_size, batch_size)
+
         if model_name == 'vit_tiny_custom':
             checkpoint = ModelCheckpoint(os.path.join(root_path, 'proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers)+'_'+str(batch_size)), monitor="val_loss", mode="min", save_best_only=True, verbose=1)
         elif model_name == 'gru_custom' or model_name == 'lstm_custom':
