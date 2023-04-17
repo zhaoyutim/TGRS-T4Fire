@@ -133,27 +133,21 @@ if __name__=='__main__':
                 input_shape=input_shape,
                 classes=num_classes,
                 activation='sigmoid',
-                pretrained=True,
                 include_top=True,
-                pretrained_top=True
             )
         elif model_name=='vit_tiny':
             model = vit.vit_tiny(
                 input_shape=input_shape,
                 classes=num_classes,
                 activation='sigmoid',
-                pretrained=True,
                 include_top=True,
-                pretrained_top=True
             )
         elif model_name=='vit_tiny_custom':
             model = vit.vit_tiny_custom(
                 input_shape=input_shape,
                 classes=num_classes,
                 activation='sigmoid',
-                pretrained=True,
                 include_top=True,
-                pretrained_top=True,
                 num_heads=num_heads,
                 mlp_dim=mlp_dim,
                 num_layers=num_layers,
@@ -171,9 +165,7 @@ if __name__=='__main__':
                 input_shape=input_shape,
                 classes=num_classes,
                 activation='sigmoid',
-                pretrained=False,
                 include_top=True,
-                pretrained_top=True
             )
         elif model_name=='tcn':
             model = compiled_tcn(return_sequences=True,
