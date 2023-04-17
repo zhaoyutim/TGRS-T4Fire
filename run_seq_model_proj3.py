@@ -84,6 +84,7 @@ if __name__=='__main__':
     parser.add_argument('-md', type=int, help='mlp-dimension')
     parser.add_argument('-ed', type=int, help='embedding dimension')
     parser.add_argument('-nl', type=int, help='num_layers')
+    parser.add_argument('-msk', type=bool, help='is masked')
 
     args = parser.parse_args()
     model_name = args.m
@@ -94,6 +95,7 @@ if __name__=='__main__':
     mlp_dim=args.md
     num_layers=args.nl
     hidden_size=args.ed
+    is_masked=args.msk
 
     run = args.r
     lr = args.lr
@@ -138,7 +140,8 @@ if __name__=='__main__':
                 num_heads=num_heads,
                 mlp_dim=mlp_dim,
                 num_layers=num_layers,
-                hidden_size=hidden_size
+                hidden_size=hidden_size,
+                is_masked=is_masked
             )
         elif model_name == 'gru_custom':
             gru = GRUModel(input_shape, num_classes)

@@ -23,72 +23,6 @@ CONFIG_Ti: ConfigDict = {
     "num_layers": 12,
     "hidden_size": 192,
 }
-CONFIG_Ti_12_2: ConfigDict = {
-    "dropout": 0.1,
-    "mlp_dim": 768,
-    "num_heads": 3,
-    "num_layers": 12,
-    "hidden_size": 384,
-}
-CONFIG_Ti_12_3: ConfigDict = {
-    "dropout": 0.1,
-    "mlp_dim": 768,
-    "num_heads": 3,
-    "num_layers": 12,
-    "hidden_size": 768,
-}
-CONFIG_Ti_12_1024: ConfigDict = {
-    "dropout": 0.1,
-    "mlp_dim": 1024,
-    "num_heads": 3,
-    "num_layers": 12,
-    "hidden_size": 192,
-}
-CONFIG_Ti_12_2048: ConfigDict = {
-    "dropout": 0.1,
-    "mlp_dim": 2048,
-    "num_heads": 3,
-    "num_layers": 12,
-    "hidden_size": 192,
-}
-CONFIG_Ti_3: ConfigDict = {
-    "dropout": 0.1,
-    "mlp_dim": 768,
-    "num_heads": 3,
-    "num_layers": 3,
-    "hidden_size": 192,
-}
-
-CONFIG_Ti_4: ConfigDict = {
-    "dropout": 0.1,
-    "mlp_dim": 768,
-    "num_heads": 3,
-    "num_layers": 4,
-    "hidden_size": 192,
-}
-
-CONFIG_Ti_6: ConfigDict = {
-    "dropout": 0.1,
-    "mlp_dim": 1024,
-    "num_heads": 8,
-    "num_layers": 6,
-    "hidden_size": 256,
-}
-
-CONFIG_Ti_6_2: ConfigDict = {
-    "dropout": 0.1,
-    "mlp_dim": 768,
-    "num_heads": 8,
-    "num_layers": 6,
-    "hidden_size": 256,
-}
-CONFIG_Ti_6_3: ConfigDict = {
-    "dropout": 0.1,
-    "mlp_dim": 2048,
-    "num_heads": 8,
-    "num_layers": 6,
-    "hidden_size": 256,
-}
 
 CONFIG_S: ConfigDict = {
     "dropout": 0.1,
@@ -114,13 +48,6 @@ CONFIG_L: ConfigDict = {
     "hidden_size": 768,
 }
 
-BASE_URL = "https://github.com/faustomorales/vit-keras/releases/download/dl"
-WEIGHTS = {"imagenet21k": 21_843, "imagenet21k+imagenet2012": 1_000}
-SIZES = {"B_16", "B_32", "L_16", "L_32"}
-
-ImageSizeArg = typing.Union[typing.Tuple[int, int], int]
-
-
 def build_model(
     input_shape: tuple,
     num_layers: int,
@@ -133,7 +60,8 @@ def build_model(
     activation="linear",
     include_top=True,
     representation_size=None,
-    return_sequence=True
+    return_sequence=True,
+    is_masked=True
 ):
     """Build a ViT model.
 
@@ -164,6 +92,7 @@ def build_model(
             num_heads=num_heads,
             mlp_dim=mlp_dim,
             dropout=dropout,
+            is_masked=is_masked,
             name=f"Transformer/encoderblock_{n}",
         )(y)
     y = tf.keras.layers.LayerNormalization(
@@ -180,43 +109,11 @@ def build_model(
     return tf.keras.models.Model(inputs=x, outputs=y, name=name)
 
 
-def validate_pretrained_top(
-    include_top: bool, pretrained: bool, classes: int, weights: str
-):
-    """Validate that the pretrained weight configuration makes sense."""
-    assert weights in WEIGHTS, f"Unexpected weights: {weights}."
-    expected_classes = WEIGHTS[weights]
-    if classes != expected_classes:
-        warnings.warn(
-            f"Can only use pretrained_top with {weights} if classes = {expected_classes}. Setting manually.",
-            UserWarning,
-        )
-    assert include_top, "Can only use pretrained_top with include_top."
-    assert pretrained, "Can only use pretrained_top with pretrained."
-    return expected_classes
-
-
-def load_pretrained(
-    size: str,
-    weights: str,
-    model: tf.keras.models.Model,
-):
-    fname = f"ViT-{size}_{weights}.npz"
-    origin = f"{BASE_URL}/{fname}"
-    local_filepath = tf.keras.utils.get_file(fname, origin, cache_subdir="weights")
-    utils.load_weights_numpy(
-        model=model,
-        params_path=local_filepath
-    )
-
-
 def vit_base(
     input_shape = (10,45),
     classes=2,
     activation="linear",
     include_top=True,
-    pretrained=True,
-    pretrained_top=True,
     weights="imagenet21k+imagenet2012",
 ):
     model = build_model(
@@ -228,16 +125,6 @@ def vit_base(
         include_top=include_top,
         representation_size=768 if weights == "imagenet21k" else None,
     )
-
-    if pretrained:
-        load_pretrained(
-            size="B_16",
-            weights=weights,
-            model=model,
-            pretrained_top=pretrained_top,
-            image_size=input_shape,
-            patch_size=16,
-        )
     return model
 
 def vit_tiny(
@@ -245,8 +132,6 @@ def vit_tiny(
     classes=2,
     activation="linear",
     include_top=True,
-    pretrained=True,
-    pretrained_top=True,
     weights="imagenet21k+imagenet2012",
 ):
     model = build_model(
@@ -259,19 +144,38 @@ def vit_tiny(
         representation_size=768 if weights == "imagenet21k" else None,
     )
     return model
+
+def vit_small(
+        input_shape=(10, 45),
+        classes=2,
+        activation="linear",
+        include_top=True,
+        weights="imagenet21k+imagenet2012",
+
+):
+    model = build_model(
+        **CONFIG_S,
+        name="vit-small",
+        input_shape=input_shape,
+        classes=classes,
+        activation=activation,
+        include_top=include_top,
+        representation_size=768 if weights == "imagenet21k" else None,
+    )
+    return model
+
 def vit_tiny_custom(
         input_shape = (10,45),
         classes=2,
         activation="linear",
         include_top=True,
-        pretrained=True,
-        pretrained_top=True,
         weights="imagenet21k+imagenet2012",
         num_heads=3,
         mlp_dim=768,
         num_layers=12,
         hidden_size=192,
-        return_sequence=True
+        return_sequence=True,
+        is_masked=True
 ):
     CONFIG_Ti_CUSTOM: ConfigDict = {
         "dropout": 0.1,
@@ -289,34 +193,7 @@ def vit_tiny_custom(
         include_top=include_top,
         representation_size=768 if weights == "imagenet21k" else None,
         return_sequence=return_sequence,
+        is_masked=is_masked
     )
-def vit_small(
-    input_shape = (10,45),
-    classes=2,
-    activation="linear",
-    include_top=True,
-    pretrained=True,
-    pretrained_top=True,
-    weights="imagenet21k+imagenet2012",
-
-):
-    model = build_model(
-        **CONFIG_S,
-        name="vit-small",
-        input_shape=input_shape,
-        classes=classes,
-        activation=activation,
-        include_top=include_top,
-        representation_size=768 if weights == "imagenet21k" else None,
-    )
-
-    # if pretrained:
-    #     load_pretrained(
-    #         size="B_16",
-    #         weights=weights,
-    #         model=model,
-    #         pretrained_top=pretrained_top,
-    #         image_size=input_shape,
-    #         patch_size=16,
-    #     )
     return model
+

@@ -66,9 +66,10 @@ class AddPositionEmbs(tf.keras.layers.Layer):
 
 @tf.keras.utils.register_keras_serializable()
 class MultiHeadSelfAttention(tf.keras.layers.Layer):
-    def __init__(self, *args, num_heads, **kwargs):
+    def __init__(self, *args, is_masked, num_heads, **kwargs):
         super().__init__(*args, **kwargs)
         self.num_heads = num_heads
+        self.is_masked = is_masked
 
     def build(self, input_shape):
         hidden_size = input_shape[-1]
@@ -87,12 +88,14 @@ class MultiHeadSelfAttention(tf.keras.layers.Layer):
         self.combine_heads = tf.keras.layers.Dense(hidden_size, name="out")
         self.softmax = tf.keras.layers.Softmax()
     # pylint: disable=no-self-use
-    def attention(self, query, key, value, attention_mask):
+    def attention(self, query, key, value, attention_mask=None):
         score = tf.matmul(query, key, transpose_b=True)
         dim_key = tf.cast(tf.shape(key)[-1], score.dtype)
         scaled_score = score / tf.math.sqrt(dim_key)
-        # weights = tf.nn.softmax(scaled_score, axis=-1)
-        weights = self._masked_softmax(scaled_score, attention_mask)
+        if attention_mask is not None:
+            weights = self._masked_softmax(scaled_score, attention_mask)
+        else:
+            weights = tf.nn.softmax(scaled_score, axis=-1)
         output = tf.matmul(weights, value)
         return output, weights
 
@@ -114,8 +117,10 @@ class MultiHeadSelfAttention(tf.keras.layers.Layer):
 
         tri_matrix = tf.stack([tf.experimental.numpy.tril(tf.ones([batch_size, self.sequence_length,self.sequence_length]), 0)]*self.num_heads)
         tri_matrix = tf.transpose(tri_matrix, perm=[1, 0, 2, 3])
-        attention_mask = tf.reshape(tri_matrix, (batch_size, self.num_heads, self.sequence_length, -1))
-
+        if self.is_masked:
+            attention_mask = tf.reshape(tri_matrix, (batch_size, self.num_heads, self.sequence_length, -1))
+        else:
+            attention_mask = None
         attention, weights = self.attention(query, key, value, attention_mask)
         attention = tf.transpose(attention, perm=[0, 2, 1, 3])
         concat_attention = tf.reshape(attention, (batch_size, -1, self.hidden_size))
@@ -137,15 +142,17 @@ class MultiHeadSelfAttention(tf.keras.layers.Layer):
 class TransformerBlock(tf.keras.layers.Layer):
     """Implements a Transformer block."""
 
-    def __init__(self, *args, num_heads, mlp_dim, dropout, **kwargs):
+    def __init__(self, *args, num_heads, mlp_dim, dropout, is_masked, **kwargs):
         super().__init__(*args, **kwargs)
         self.num_heads = num_heads
         self.mlp_dim = mlp_dim
         self.dropout = dropout
+        self.is_masked = is_masked
 
     def build(self, input_shape):
         self.att = MultiHeadSelfAttention(
             num_heads=self.num_heads,
+            is_masked=self.is_masked,
             name="MultiHeadDotProductAttention_1",
         )
         self.mlpblock = tf.keras.Sequential(
