@@ -6,11 +6,7 @@ from tensorflow.keras.layers import Bidirectional
 class GRUModel:
     def __init__(self, input_shape, num_classes):
         self.input_shape = input_shape
-        # self.gru_layers=gru_layers
         self.num_classes = num_classes
-        # self.projection_dims=projection_dims
-        self.model = self.get_model(input_shape, num_classes)
-        self.model_5_layers = self.get_model_5_layers(input_shape, num_classes)
 
     def recall_m(self, y_true, y_pred):
         true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))

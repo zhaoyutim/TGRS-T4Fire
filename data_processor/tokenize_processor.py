@@ -1,3 +1,5 @@
+import platform
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -5,37 +7,39 @@ class TokenizeProcessor:
 
     def tokenizing(self, data_path, window_size):
         array = np.load(data_path).transpose((0, 3, 4, 1, 2))
-        output_shape = (array.shape[0], array.shape[1], array.shape[2], array.shape[3], (array.shape[4]-2) * pow(window_size, 2)+2)
+        # output_shape = (array.shape[0], array.shape[1], array.shape[2], array.shape[3], array.shape[4])
 
-        output_array = np.zeros(output_shape)
-        padding = window_size // 2
-        padded_array = np.pad(array, pad_width=((0,0),(padding,padding),(padding,padding),(0,0),(0,0)), mode='constant', constant_values=0)
-        shape = padded_array.shape[1]
-        for num_sample in range(array.shape[0]):
-            for i in range(padding, shape-padding):
-                for j in range(padding, shape-padding):
-                    output_array[num_sample, i-padding, j-padding, :, :] = self.flatten_window(padded_array[num_sample, i-padding:i+padding+1, j-padding:j+padding+1, :, :], window_size)
+        # output_array = np.zeros(output_shape)
+        # padding = window_size // 2
+        # padded_array = np.pad(array, pad_width=((0,0),(padding,padding),(padding,padding),(0,0),(0,0)), mode='constant', constant_values=0)
+        # shape = padded_array.shape[1]
+        # for num_sample in range(array.shape[0]):
+        #     for i in range(padding, shape-padding):
+        #         for j in range(padding, shape-padding):
+        #             output_array[num_sample, i-padding, j-padding, :, :] = self.flatten_window(padded_array[num_sample, i-padding:i+padding+1, j-padding:j+padding+1, :, :], window_size)
         # print(output_array.shape)
-        return output_array
+        return array
     def flatten_window(self, array, window_size):
         # print(array.shape)
-        output_array = np.zeros((array.shape[2], (array.shape[3]-2)*pow(window_size,2)+2))
+        output_array = np.zeros((array.shape[2], (array.shape[3])*pow(window_size,2)))
         for time in range(array.shape[2]):
-            output_array[time, :output_array.shape[1]-2] = array[:, :, time, :5].flatten('F')
-            output_array[time, output_array.shape[1]-2] = array[window_size//2, window_size//2, time, 5]
-            output_array[time, output_array.shape[1]-1] = array[window_size // 2, window_size // 2, time, 6]
+            output_array[time, :] = array[:, :, time, :].flatten('F')
         return output_array
 
 
 
 if __name__=='__main__':
+    import os
+    if platform.system() == 'Darwin':
+        root_path = '/Users/zhaoyu/PycharmProjects/T4Fire/data'
+    else:
+        root_path = '/geoinfo_vol1/zhao2/proj5_dataset'
     window_size = 1
-    locations= ['sydney']
-    for location in locations:
-        tokenize_processor = TokenizeProcessor()
-        tokenized_array = tokenize_processor.tokenizing(data_path='/Users/zhaoyu/PycharmProjects/CalFireMonitoring/data_train_proj5/proj5_'+location+'_img.npy', window_size=window_size)
-        np.nan_to_num(tokenized_array)
-        np.save('../data/proj5_'+location+'_w'+str(window_size)+'.npy', tokenized_array.reshape(-1,10,pow(window_size,2)*5+2))
+    ts_length=10
+    tokenize_processor = TokenizeProcessor()
+    tokenized_array = tokenize_processor.tokenizing(os.path.join(root_path,'proj5_train_img_seqtoseq_l'+str(ts_length)+'.npy'), window_size)
+    np.nan_to_num(tokenized_array)
+    np.save(os.path.join(root_path,'proj5_train_img_seqtoone_l'+str(ts_length)+'_w'+str(window_size)+'.npy'), tokenized_array.reshape(-1,tokenized_array.shape[-2],tokenized_array.shape[-1]))
     # np.save('../data/proj3_test_w' + str(window_size) + 'patch_seg.npy',
     #         tokenized_array)
     # np.save('../data/proj3_test_w' + str(window_size) + 'label.npy',
