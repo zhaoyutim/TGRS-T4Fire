@@ -226,9 +226,9 @@ if __name__=='__main__':
             callbacks=[WandbCallback()],
         )
         if model_name == 'vit_tiny_custom':
-            model.save(os.path.join(root_path, 'proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers)+'_'+str(batch_size)))
+            model.save(os.path.join(root_path, 'proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(num_heads)+'_'+str(mlp_dim)+'_'+str(hidden_size)+'_'+str(num_layers)+'_'+str(batch_size)+'_'+str(is_masked)))
         elif model_name == 'gru_custom' or model_name == 'lstm_custom':
-            model.save(os.path.join(root_path, 'proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(hidden_size)+'_'+str(num_layers)))
+            model.save(os.path.join(root_path, 'proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(hidden_size)+'_'+str(num_layers)+'_'+str(is_masked)))
         else:
-            model.save(os.path.join(root_path, 'proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)))
+            model.save(os.path.join(root_path, 'proj3_'+model_name+'w' + str(window_size) + '_nopretrained'+'_run'+str(run)+'_'+str(is_masked)))
 
