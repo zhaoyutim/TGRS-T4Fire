@@ -1,5 +1,8 @@
 # Tokenized Time-Series in Satellite Image Segmentation with Transformer Network for Active Fire Detection
 
+The spatial models are from repo: https://github.com/yingkaisha/keras-unet-collection
+The original Transformer implementation are from repo: https://github.com/faustomorales/vit-keras
+
 ## Repo Structure
     .
     ├── analysis                                   # Analysis file for VIIRS Band I4 Data
