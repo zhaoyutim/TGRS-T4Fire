@@ -8,7 +8,7 @@ import numpy as np
 import yaml
 from rasterio._io import Affine
 
-from Preprocessing.PreprocessingService import PreprocessingService
+from data_processor.PreprocessingService import PreprocessingService
 
 with open("config/configuration.yml", "r", encoding="utf8") as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
@@ -56,13 +56,13 @@ class DatasetProcessor(PreprocessingService):
         window_size = 3
         ts_length = 10
         stack_over_location = []
-        save_path = 'data_train_proj2/'
+        save_path = '/geoinfo_vol1/home/z/h/zhao2/T4Fire/data'
         n_channels = 5
         if not os.path.exists(save_path):
             os.mkdir(save_path)
         for location in locations:
             print(location)
-            data_path = 'data/' + location + '/' + satellite + '/'
+            data_path = '/geoinfo_vol1/home/z/h/zhao2/CalFireMonitoring/data/' + location + '/' + satellite + '/'
             file_list = glob(data_path + '/*.tif')
             file_list.sort()
             if len(file_list) % ts_length != 0:
@@ -141,12 +141,12 @@ class DatasetProcessor(PreprocessingService):
         window_size = 3
         ts_length = 10
         stack_over_location = []
-        save_path = 'data_train_proj2/'
+        save_path = '/geoinfo_vol1/home/z/h/zhao2/T4Fire/data'
         n_channels = 5
         if not os.path.exists(save_path):
             os.mkdir(save_path)
         print(location)
-        data_path = 'data/' + location + '/' + satellite + '/'
+        data_path = '/geoinfo_vol1/home/z/h/zhao2/CalFireMonitoring/data/' + location + '/' + satellite + '/'
         file_list = glob(data_path + '/*.tif')
         file_list.sort()
         if len(file_list) % ts_length != 0:
