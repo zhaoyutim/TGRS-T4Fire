@@ -3,7 +3,7 @@ import warnings
 import tensorflow as tf
 import typing_extensions as tx
 
-from model.vit_keras.patch_encoder import PatchEncoder
+from temporal_models.vit_keras.patch_encoder import PatchEncoder
 from . import layers, utils
 
 ConfigDict = tx.TypedDict(

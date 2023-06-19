@@ -1,48 +1,33 @@
 import argparse
 import os
-import platform
 import random
-
 import numpy as np
 import tensorflow as tf
+seed=42
+tf.random.set_seed(seed)
+np.random.seed(seed)
+random.seed(seed)
+import platform
 import tensorflow_addons as tfa
-import wandb
-from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.callbacks import ModelCheckpoint
 from wandb.integration.keras import WandbCallback
 
-from model.lstm.lstm_model import LSTMModel
-from model.gru.gru_model import GRUModel
-from model.tcn.tcn import compiled_tcn
-from model.validation_metrics import ValidationAccuracy
-from model.vit_keras import vit
+import wandb
+from temporal_models.gru.gru_model import GRUModel
+from temporal_models.lstm.lstm_model import LSTMModel
+from temporal_models.tcn.tcn import compiled_tcn
+from temporal_models.vit_keras import vit
 
 if platform.system() == 'Darwin':
     root_path = '/Users/zhaoyu/PycharmProjects/T4Fire/data'
-
 else:
     root_path = '/geoinfo_vol1/zhao2'
 
-def set_global_seed(seed=21):
-    # Tensorflow
-    try:
-        import tensorflow as tf
-    except ImportError:
-        pass
-    else:
-        tf.random.set_seed(seed)
-
-    # NumPy
-    np.random.seed(seed)
-
-    # Python
-    random.seed(seed)
-
 def get_dateset(window_size, batch_size):
     x_dataset = np.load(os.path.join(root_path, 'proj3_train_v2_w' + str(window_size) + '.npy'))
-    # x_dataset = np.load('/geoinfo_vol1/zhao2/proj3_allfire_w' + str(window_size) + '.npy')
-    # x_dataset = x_dataset[:,::-1,:]
     y_dataset = np.zeros((x_dataset.shape[0],x_dataset.shape[1],2))
+
+    #TODO: Here needs changes
     y_dataset[: ,:, 0] = x_dataset[:, :, pow(window_size,2)*5] == 0
     y_dataset[:, :, 1] = x_dataset[:, :, pow(window_size,2)*5] > 0
     
@@ -54,7 +39,6 @@ def get_dateset(window_size, batch_size):
     y_dataset_val[: ,:, 0] = x_dataset_val[:, :, pow(window_size,2)*5] == 0
     y_dataset_val[:, :, 1] = x_dataset_val[:, :, pow(window_size,2)*5] > 0
 
-    # x_train, x_val, y_train, y_val = train_test_split(x_dataset[:,:,:pow(window_size,2)*5+1], y_dataset, test_size=0.2, random_state=0)
     x_train, x_val, y_train, y_val = x_dataset[:,:,:pow(window_size,2)*5], x_dataset_val[:,:,:pow(window_size,2)*5], y_dataset, y_dataset_val
     def make_generator(inputs, labels):
         def _generator():
@@ -71,9 +55,9 @@ def get_dateset(window_size, batch_size):
     steps_per_epoch = x_train.shape[0]//batch_size
     validation_steps = x_val.shape[0]//(224*224)
     return train_dataset, val_dataset, steps_per_epoch, validation_steps
+
 def wandb_config(window_size, model_name, run, num_heads, num_layers, mlp_dim, hidden_size):
     wandb.login()
-    # wandb.init(project="tokenized_window_size" + str(window_size) + str(model_name) + 'run' + str(run), entity="zhaoyutim")
     wandb.init(project="proj3_"+model_name+"_grid_search", entity="zhaoyutim")
     wandb.run.name = 'num_heads_' + str(num_heads) + 'num_layers_'+ str(num_layers)+ 'mlp_dim_'+str(mlp_dim)+'hidden_size_'+str(hidden_size)+'batchsize_'+str(batch_size)
     wandb.config = {
@@ -88,7 +72,7 @@ def wandb_config(window_size, model_name, run, num_heads, num_layers, mlp_dim, h
     }
 
 if __name__=='__main__':
-    set_global_seed(seed=42)
+
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-m', type=str, help='Model to be executed')
     parser.add_argument('-w', type=int, help='Window size')
@@ -203,7 +187,6 @@ if __name__=='__main__':
     options.experimental_distribute.auto_shard_policy = tf.data.experimental.AutoShardPolicy.OFF
     train_dataset = train_dataset.with_options(options)
     val_dataset = val_dataset.with_options(options)
-    metrics = ValidationAccuracy(val_dataset, validation_steps)
     if load_weights== 'yes':
         model.load_weights(os.path.join(root_path, 'proj3_' + model_name + 'w' + str(window_size) + '_nopretrained'+'_run'+str(run)))
     else:

@@ -13,7 +13,7 @@ from Preprocessing.PreprocessingService import PreprocessingService
 with open("config/configuration.yml", "r", encoding="utf8") as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 
-class Proj2DatasetProcessor(PreprocessingService):
+class DatasetProcessor(PreprocessingService):
 
     def reconstruct_tif_proj2(self, location, satellite='VIIRS_Day', image_size=(224, 224)):
         data_path = 'data/' + location + '/' + satellite + '/'
@@ -84,8 +84,6 @@ class Proj2DatasetProcessor(PreprocessingService):
                 for i in range(file_list_size):
                     file = file_list[i + j * 10]
                     array, _ = preprocessing.read_tiff(file)
-                    # pick up channels here
-                    # array = array[3:, :, :]
                     th_i = th[i]
                     # plt.subplot(231)
                     # plt.imshow(array[3, :, :])
@@ -137,7 +135,6 @@ class Proj2DatasetProcessor(PreprocessingService):
         # output_array_stacked_over_location = self.normalization(output_array_stacked_over_location, n_channels)
 
         np.save(save_path + file_name, output_array_stacked_over_location.astype(np.float))
-        # self.upload_to_gcloud(save_path+file_name)
 
     def dataset_generator_proj2_image_test(self, location, file_name, image_size=(224, 224)):
         satellite = 'VIIRS_Day'

@@ -9,7 +9,7 @@ import segmentation_models as sm
 from wandb.integration.keras import WandbCallback
 from segmentation_models.metrics import iou_score, f1_score
 from segmentation_models import Unet, Linknet, PSPNet, FPN
-from keras_unet_collection import models
+from spatial_models import models
 
 def get_dateset(batch_size):
 
@@ -48,14 +48,6 @@ def dice_coef(y_true, y_pred):
 def wandb_config(model_name, backbone, run):
     wandb.login()
     wandb.init(project=str(model_name)+'_'+str(backbone)+'run'+str(run), entity="zhaoyutim")
-    # wandb.config = {
-    #   "learning_rate": learning_rate,
-    #   "weight_decay": weight_decay,
-    #   "epochs": MAX_EPOCHS,
-    #   "batch_size": batch_size,
-    #   "num_heads":num_heads,
-    #   "transformer_layers": transformer_layers
-    # }
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')

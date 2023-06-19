@@ -24,3 +24,5 @@ proj5_plt
 ._.DS_Store
 ._data
 logs
+.gitignore
+results
