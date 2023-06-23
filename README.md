@@ -6,6 +6,8 @@ The original Transformer implementation are from repo: https://github.com/fausto
 
 The Dataset Downloader is from repo: https://github.com/zhaoyutim/LowResSatellitesService
 
+Link to the paper: [DOI:10.1109/TGRS.2023.3287498](https://ieeexplore.ieee.org/document/10155171)
+
 ## Repo Structure
     .
     ├── analysis                                   # Analysis file for VIIRS Band I4 Data
